@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Post,
   Put,
@@ -18,8 +20,9 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
-import { Payload } from '@nestjs/microservices';
-
+import { VerifyAccountDto } from './dto/verify-account.dto';
+import { UpdatePasswordDto } from './dto/update-pass.dto';
+import { ResetPassDto } from './dto/resetPass-user.dto';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -27,7 +30,11 @@ export class UserController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: CreateUserDto) {
-    return await this.userService.create(createUserDto);
+    try {
+      return await this.userService.create(createUserDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Get('list')
@@ -36,21 +43,23 @@ export class UserController {
     return await this.userService.findAll();
   }
 
-  @Put('')
-  async updateUser(@Body() updateUserDto: UpdateUserDto) {
+  @Put('update')
+  async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<User> {
     try {
-      const updatedUser = await this.userService.updateUser(updateUserDto);
-      return { message: 'User updated successfully', user: updatedUser };
+      return await this.userService.updateUserDetails(updateUserDto);
     } catch (error) {
-      
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Req() req: Request, @Body() loginDto: LoginDto) {
-    console.log(req.user);
-    return this.userService.login(req, loginDto);
+    try {
+      return await this.userService.login(req, loginDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Post('token/refresh')
@@ -58,16 +67,85 @@ export class UserController {
   async refreshAccessToken(
     @Body() refreshAccessTokenDto: RefreshAccessTokenDto,
   ) {
-    return await this.userService.refreshAccessToken(refreshAccessTokenDto);
+    try {
+      return await this.userService.refreshAccessToken(refreshAccessTokenDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Put('password')
-  @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.OK)
+   @HttpCode(HttpStatus.OK)
   async changePassword(
     @Req() req,
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
-    return this.userService.changePassword(req.user, changePasswordDto);
+    try {
+      return await this.userService.changePassword(changePasswordDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(@Body() ResetPassDto: ResetPassDto) {
+    try {
+      return await this.userService.resetPassword(ResetPassDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('send-reset-password-email')
+  @HttpCode(HttpStatus.OK)
+  async sendResetPasswordEmail(@Body() email: string) {
+    try {
+      await this.userService.sendResetPasswordEmail(email);
+      return { message: 'Reset password email sent successfully' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('verify-account')
+  @HttpCode(HttpStatus.OK)
+  async verifyAccount(@Body() verifyAccountDto: VerifyAccountDto) {
+    try {
+      await this.userService.verifyAccount(verifyAccountDto.email, verifyAccountDto.otp);
+      return { message: 'Account verified successfully' };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Put('update-password')
+  @HttpCode(HttpStatus.OK)
+  async updatePassword(@Body() updatePasswordDto: UpdatePasswordDto) {
+    try {
+      return await this.userService.updatePassword(updatePasswordDto.oldPassword, updatePasswordDto.newPassword);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Delete()
+   @HttpCode(HttpStatus.OK)
+  async deleteUser(@Req() req) {
+    try {
+      return await this.userService.deleteUserById();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get('profile')
+  @HttpCode(HttpStatus.OK)
+  async getProfile(@Req() req) {
+    try {
+      return await this.userService.getUserById();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 }

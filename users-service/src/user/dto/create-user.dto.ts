@@ -25,4 +25,13 @@ export class CreateUserDto {
   @MinLength(5)
   @MaxLength(1024)
   readonly password: string;
+
+
+    username:string;
+    
+    role:string;
+    
+    PhoneNumber:string;
+    OTP:string;
+
 }
