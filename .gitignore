@@ -31,6 +31,7 @@ lerna-debug.log*
 *.sublime-workspace
 
 frontend/node_modules
+frontend/.next
 
 # IDE - VSCode
 .vscode/*
