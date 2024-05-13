@@ -7,12 +7,7 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(5)
-  @MaxLength(255)
-  readonly name: string;
-
+ 
   @IsNotEmpty()
   @IsString()
   @MinLength(5)

@@ -87,7 +87,7 @@ export class UserService {
     const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton
 
     if (!userId) {
-      throw new Error('User ID not found');
+      throw new Error('Your session sxpired, Please Login in again');
     }
 
     const user = await this.userModel.findById(userId);
@@ -101,7 +101,7 @@ export class UserService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = new this.userModel(createUserDto);
     await this.isEmailUnique(createUserDto.email);
-    await this.sendVerificationEmail(createUserDto.email, createUserDto.OTP);
+    await this.sendVerificationEmail(createUserDto.email, this.generateOTP());
     return await user.save();
   }
 
@@ -132,7 +132,7 @@ export class UserService {
     const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton
 
     if (!userId) {
-      throw new Error('User ID not found');
+      throw new Error('Your session sxpired, Please Login in again');
     }
 
     const user = await this.userModel.findById(userId);
@@ -163,7 +163,7 @@ export class UserService {
     const userId = this.userSingleton.getCurrentUser()?._id;
 
     if (!userId) {
-      throw new Error('User ID not found');
+      throw new Error('Your session sxpired, Please Login in again');
     }
 
     const user = await this.userModel.findById(userId);
@@ -195,7 +195,7 @@ export class UserService {
     const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton
 
     if (!userId) {
-      throw new Error('User ID not found');
+      throw new Error('Your session sxpired, Please Login in again');
     }
 
     const user = await this.userModel.findById(userId);
@@ -214,7 +214,7 @@ export class UserService {
     const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton
 
     if (!userId) {
-      throw new Error('User ID not found');
+      throw new Error('Your session sxpired, Please Login in again');
     }
 
     const user = await this.userModel.findById(userId);
@@ -275,7 +275,7 @@ export class UserService {
     const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton
 
     if (!userId) {
-      throw new Error('User ID not found');
+      throw new Error('Your session sxpired, Please Login in again');
     }
 
     const user = await this.userModel.findOneAndDelete({ userId }).exec();
@@ -291,7 +291,7 @@ export class UserService {
     const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton
 
     if (!userId) {
-      throw new Error('User ID not found');
+      throw new Error('Your session sxpired, Please Login in again');
     }
 
     const user = await this.userModel.findById(userId);
