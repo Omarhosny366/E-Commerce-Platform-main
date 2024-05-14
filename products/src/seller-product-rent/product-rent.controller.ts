@@ -1,4 +1,4 @@
-import { Controller, Delete, Post, Param, Body, Put } from '@nestjs/common';
+import { Controller, Delete, Post, Param, Body, Put, NotFoundException } from '@nestjs/common';
 import { SellerRentProductService } from './product-rent.service';
 import { CreateSellerRentProductDto } from './dto/create-product-rent.dto';
 
@@ -18,7 +18,12 @@ export class SellerRentProductController {
 
   @Delete(':id')
   async deleteProduct(@Param('id') id: string): Promise<any> {
-    return this.sellerRentProductService.remove(id);
+    try {
+      await this.sellerRentProductService.remove(id);
+      return { success: true, message: `Product with id ${id} deleted successfully` };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   }
 
   @Put(':id')
@@ -27,11 +32,23 @@ export class SellerRentProductController {
     @Body() updateSellerRentProductDto: CreateSellerRentProductDto,
   ): Promise<any> {
     try {
-      const updatedProduct = await this.sellerRentProductService.update(id, updateSellerRentProductDto);
+      // Find the product by ID
+      const existingProduct = await this.sellerRentProductService.findOne(id);
+      if (!existingProduct) {
+        throw new NotFoundException('Product not found');
+      }
+  
+      // Update the product's properties
+      Object.assign(existingProduct, updateSellerRentProductDto);
+  
+      // Save the updated product
+      const updatedProduct = await this.sellerRentProductService.save(existingProduct);
+  
       return { success: true, data: updatedProduct };
     } catch (error) {
       return { success: false, error: error.message };
     }
   }
+  
 
 }

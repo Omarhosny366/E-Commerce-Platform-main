@@ -9,12 +9,12 @@ import { SellerProductRentRepository } from './product-rent.repository';
 export class SellerRentProductService {
   constructor(
     @InjectModel(SellerRentProduct.name) private sellerRentProductModel: Model<SellerRentProductDocument>,
-  private readonly sellerProductRentRepository: SellerProductRentRepository, // Add this line
-) {}
+    private readonly sellerProductRentRepository: SellerProductRentRepository,
+  ) {}
 
   async create(createSellerRentProductDto: CreateSellerRentProductDto): Promise<SellerRentProduct> {
-    const createdSellerRentProduct = new this.sellerRentProductModel(createSellerRentProductDto);
-    return createdSellerRentProduct.save();
+    const createdProduct = await this.sellerProductRentRepository.create(createSellerRentProductDto);
+    return createdProduct;
   }
   
   async delete(id: string): Promise<void> {
@@ -25,11 +25,10 @@ export class SellerRentProductService {
   }
 
   async update(id: string, updateSellerRentProductDto: CreateSellerRentProductDto): Promise<SellerRentProduct> {
-    const existingProduct = await this.sellerRentProductModel.findByIdAndUpdate(
+    const existingProduct = await this.sellerProductRentRepository.findByIdAndUpdate(
       id,
       updateSellerRentProductDto,
-      { new: true },
-    ).exec();
+    );
 
     if (!existingProduct) {
       throw new NotFoundException('Product not found');
@@ -39,14 +38,20 @@ export class SellerRentProductService {
   }
 
   async findAll(): Promise<SellerRentProduct[]> {
-    return this.sellerRentProductModel.find().exec();
+    return this.sellerProductRentRepository.find({});
   }
 
   async findOne(id: string): Promise<SellerRentProduct> {
-    return this.sellerRentProductModel.findById(id).exec();
+    return this.sellerProductRentRepository.findOne({ _id: id });
   }
 
+  async save(product: SellerRentProduct): Promise<SellerRentProduct> {
+    const newProduct = new this.sellerRentProductModel(product);
+    return newProduct.save();
+  }
+  
+
   async remove(id: string): Promise<any> {
-    return this.sellerRentProductModel.findByIdAndDelete(id).exec();
+    return this.sellerProductRentRepository.deleteProduct(id);
   }
 }

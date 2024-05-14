@@ -32,6 +32,12 @@ export class SellerProductRentRepository {
     async findByIdAndUpdate(id: string, product: Partial<SellerRentProduct>): Promise<SellerRentProduct> {
         return this.productRentModel.findByIdAndUpdate(id, product, { new: true });
     }
+
+    async save(product: SellerRentProductDocument): Promise<SellerRentProduct> {
+        return product.save();
+    }
+
+    
 }
 
 export default SellerProductRentRepository;
