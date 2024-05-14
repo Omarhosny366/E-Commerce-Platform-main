@@ -5,5 +5,10 @@ export class UpdateUserDto {
   @IsString()
   @MinLength(5)
   @MaxLength(255)
-  readonly name: string;
+  readonly username: string;
+ 
+  PhoneNumber:string;
+ 
+  email: string;
+
 }

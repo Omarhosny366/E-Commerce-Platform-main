@@ -7,12 +7,7 @@ import {
 } from 'class-validator';
 
 export class CreateUserDto {
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(5)
-  @MaxLength(255)
-  readonly name: string;
-
+ 
   @IsNotEmpty()
   @IsString()
   @MinLength(5)
@@ -25,4 +20,13 @@ export class CreateUserDto {
   @MinLength(5)
   @MaxLength(1024)
   readonly password: string;
+
+
+    username:string;
+    
+    role:string;
+    
+    PhoneNumber:string;
+    OTP:string;
+
 }
