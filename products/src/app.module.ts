@@ -5,14 +5,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SellerRentProductModule } from './seller-product-rent/product-rent.module';
 import { CustRentProductModule } from './customer-product-rent/cust-rent-product.module';
-import { CustPurchaseProductModule } from './customer-product-purchase/cust-purchase-products.module'; // Import the module
+import { CustPurchaseProductModule } from './customer-product-purchase/cust-purchase-products.module';
+import { CustomizedProductModule } from './customized-product/customized-product.module'; // Import the module
 
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb+srv://omarhosny120:omarINsee@seelaz-cluster.oh8ciqb.mongodb.net'), // Adjust the MongoDB connection string as needed
     SellerRentProductModule,
-    CustRentProductModule, // Add the module here
-    CustPurchaseProductModule, // Add the new module here
+    CustRentProductModule,
+    CustPurchaseProductModule,
+    CustomizedProductModule, // Add the new module here
     ClientsModule.register([
       {
         name: 'test',
