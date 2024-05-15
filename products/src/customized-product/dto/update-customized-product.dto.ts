@@ -8,4 +8,5 @@ export class UpdateCustomizedProductDto {
     readonly downPayment?: number;
     readonly customizing_status?: string;
     // readonly seller_user_id?: string;
+    readonly review?: number;
 }

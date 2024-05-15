@@ -8,5 +8,6 @@ export class UpdateCustRentProductDto {
     readonly start_date?: Date;
     readonly duration?: number;
     readonly end_date?: Date;
+    readonly review?: number;
   }
   

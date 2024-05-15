@@ -31,6 +31,9 @@ export class CustomizedProduct {
 
     // @Prop({ required: true, type: Types.ObjectId, ref: 'User' })
     // seller_user_id: Types.ObjectId;
+
+    @Prop()
+    review: number;
 }
 
 export const CustomizedProductSchema = SchemaFactory.createForClass(CustomizedProduct);

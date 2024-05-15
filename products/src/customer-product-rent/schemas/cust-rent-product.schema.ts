@@ -31,6 +31,9 @@ export class CustRentProduct {
 
     @Prop()
     end_date: Date;
+
+    @Prop()
+    review: number;
 }
 
 export const CustRentProductSchema = SchemaFactory.createForClass(CustRentProduct);

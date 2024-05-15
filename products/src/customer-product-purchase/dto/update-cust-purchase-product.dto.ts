@@ -5,4 +5,5 @@ export class UpdateCustPurchaseProductDto {
     readonly material?: string;
     readonly price?: number;
     readonly quantity?: number;
+    readonly review?: number;
 }

@@ -22,6 +22,9 @@ export class CustPurchaseProduct {
 
     @Prop()
     quantity: number;
+
+    @Prop()
+    review: number;
 }
 
 export const CustPurchaseProductSchema = SchemaFactory.createForClass(CustPurchaseProduct);
