@@ -17,7 +17,7 @@ import { UserSingleton } from './cart/userSingleton';
   ],
   controllers: [AppController],
   providers: [AppService, {
-    provide: 'UserSingleton', // Provide a token for UserSingleton
+    provide: 'UserSingleton', // Provide a token for UserSingletonز
     useFactory: () => {
       const userSingleton = UserSingleton.getInstance();
       return userSingleton;
