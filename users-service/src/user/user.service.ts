@@ -19,6 +19,8 @@ import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
 import { UserSingleton } from './UserSingleton'; // Correct import statement
 import * as nodemailer from 'nodemailer';
 import { ResetPassDto } from './dto/resetPass-user.dto';
+import { Inject } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
@@ -27,6 +29,8 @@ export class UserService {
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
+
     private authService: AuthService,
   ) {
     this.transporter = nodemailer.createTransport({
@@ -83,20 +87,22 @@ export class UserService {
     return { message: 'Password reset successfully' };
   }
 
-  async getUserById(): Promise<User> {
-    const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton
-
-    if (!userId) {
-      throw new Error('Your session sxpired, Please Login in again');
+    async getUserById(): Promise<User> {
+      const userId = this.userSingleton.getCurrentUser()?._id; 
+    
+      if (!userId) {
+        throw new Error('Your session expired, Please Login in again');
+      }
+    
+      const user = await this.userModel.findById(userId);
+    
+      
+      if (!user) {
+        throw new Error('User not found');
+      }
+      return user;
     }
-
-    const user = await this.userModel.findById(userId);
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-    return user;
-  }
+  
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = new this.userModel(createUserDto);
@@ -119,14 +125,19 @@ export class UserService {
   async login(req: Request, loginDto: LoginDto): Promise<{ user: User, jwtToken: string, refreshToken: string }> {
     const user = await this.findByMail(loginDto.email);
     await this.checkPassword(loginDto.password, user.password);
-    this.userSingleton.setCurrentUser(user); // Set the current user in UserSingleton
+    this.userSingleton.setCurrentUser(user);
 
-    return {
+    this.kafkaClient.emit('user.logged.in', JSON.stringify(user));
+
+    const result = {
       user,
       jwtToken: await this.authService.createAccessToken(user._id),
       refreshToken: await this.authService.createRefreshToken(req, user._id),
     };
+
+    return result;
   }
+
 
   async updateUserDetails( updateUserDto: UpdateUserDto): Promise<User> {
     const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton

@@ -12,12 +12,12 @@ async function bootstrap() {
         brokers: ['localhost:9092'],
       },
       consumer: {
-        groupId: 'user-consumer',
+        groupId: 'cart-consumer',
       },
     },
   });
 
   await app.startAllMicroservices();
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();

@@ -1,4 +1,4 @@
-import { User } from './schemas/user.schema';
+import { User } from './user.interface'; 
 
 export class UserSingleton {
   private static instance: UserSingleton;

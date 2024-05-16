@@ -4,11 +4,8 @@ import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './schemas/user.schema';
 import { AuthModule } from '../auth/auth.module';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UserSingleton } from './UserSingleton';
-// import { AddressModule } from 'src/Address/address.module';
-import { AuthService } from 'src/auth/auth.service';
-// import { WishlistModule } from 'src/Wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -16,12 +13,25 @@ import { AuthService } from 'src/auth/auth.service';
       {
         name: 'User',
         schema: UserSchema,
+      }
+    ]),
+    ClientsModule.register([
+      {
+        name: 'KAFKA_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            brokers: ['localhost:9092'],
+          },
+          consumer: {
+            groupId: 'user-consumer',
+          },
+        },
       },
     ]),
-    AuthModule,/*AddressModule*//*WishlistModule*/
+    AuthModule
   ],
   providers: [UserService],
   controllers: [UserController],
-  
 })
 export class UserModule {}

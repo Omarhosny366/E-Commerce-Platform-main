@@ -23,6 +23,7 @@ import { User } from './schemas/user.schema';
 import { VerifyAccountDto } from './dto/verify-account.dto';
 import { UpdatePasswordDto } from './dto/update-pass.dto';
 import { ResetPassDto } from './dto/resetPass-user.dto';
+import { MessagePattern } from '@nestjs/microservices';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -139,13 +140,15 @@ export class UserController {
     }
   }
 
-  @Get('profile')
-  @HttpCode(HttpStatus.OK)
-  async getProfile(@Req() req) {
-    try {
-      return await this.userService.getUserById();
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+// @MessagePattern('sendID')
+@Get('profile')
+@HttpCode(HttpStatus.OK)
+async getProfile(@Req() req) {
+  try {
+    return await this.userService.getUserById();
+  } catch (error) {
+    throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
   }
+}
+
 }

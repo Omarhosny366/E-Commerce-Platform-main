@@ -9,9 +9,25 @@ import { UserService } from 'src/user/user.service';
 import { AddressService } from 'src/Address/address.service';
 import { UserModule } from 'src/user/user.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Wishlist.name, schema: WishlistSchema },{ name: User.name, schema: UserSchema }])
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'KAFKA_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            brokers: ['localhost:9092'],
+          },
+          consumer: {
+            groupId: 'user-consumer',
+          },
+        },
+      },
+    ]),
+    MongooseModule.forFeature([{ name: Wishlist.name, schema: WishlistSchema },{ name: User.name, schema: UserSchema }])
 
 ],
   providers: [WishlistService,{

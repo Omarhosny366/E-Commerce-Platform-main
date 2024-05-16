@@ -27,7 +27,7 @@ export class User extends Document {
 
   @Prop()
   role: string;
-  
+
   @Prop()
   PhoneNumber: string;
 
@@ -39,7 +39,6 @@ export class User extends Document {
 
   @Prop()
   paymentCard_ID: string[];
-
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -49,7 +48,6 @@ UserSchema.pre('save', async function () {
     if (!this.isSelected('password') || !this.isModified('password')) {
       return;
     }
-    // tslint:disable-next-line:no-string-literal
     this['password'] = await bcrypt.hash(this['password'], 10);
   } catch (err) {
     throw err;
