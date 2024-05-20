@@ -54,7 +54,6 @@ export class CustRentProductController {
 
 
 
-
   @MessagePattern('get.product.price')
   async handleProductPriceRequest(@Payload() message) {
     try {
@@ -74,8 +73,9 @@ export class CustRentProductController {
       throw error;
     }
   }
+
   @MessagePattern('get.product.type')
-  async handleProducttypeRequest(@Payload() message) {
+  async handleProductTypeRequest(@Payload() message) {
     try {
       const { productId } = message;
       if (!productId) {
@@ -89,10 +89,11 @@ export class CustRentProductController {
 
       return { type: productDetails.type };
     } catch (error) {
-      console.error('Error handling product price request:', error.message);
+      console.error('Error handling product type request:', error.message);
       throw error;
     }
   }
+
   @MessagePattern('get.product.dimm')
   async handleProductDimmRequest(@Payload() message) {
     try {
@@ -108,13 +109,13 @@ export class CustRentProductController {
 
       return { dimensions: productDetails.dimensions };
     } catch (error) {
-      console.error('Error handling product material request:', error.message);
+      console.error('Error handling product dimensions request:', error.message);
       throw error;
     }
   }
 
   @MessagePattern('get.product.mat')
-  async handleProductDimRequest(@Payload() message) {
+  async handleProductMatRequest(@Payload() message) {
     try {
       const { productId } = message;
       if (!productId) {
@@ -132,5 +133,4 @@ export class CustRentProductController {
       throw error;
     }
   }
-
 }

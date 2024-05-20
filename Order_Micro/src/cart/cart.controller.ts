@@ -1,4 +1,4 @@
-import { Controller, Inject, Patch, Delete, Param, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Inject, Patch, Delete, Param, Body, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { ClientKafka, EventPattern, Payload } from '@nestjs/microservices';
 import { CartService } from './cart.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
@@ -42,13 +42,26 @@ export class CartController {
   }
   @Patch()
   async addToCart(@Body() addToCartDto: AddToCartDto) {
-    try {
-      return await this.cartService.addToCart(addToCartDto.productId, addToCartDto.quantity);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      throw error;
-    }
+      console.log('Received DTO:', addToCartDto);
+
+      try {
+          const startDate = addToCartDto.startDate ? new Date(addToCartDto.startDate) : undefined;
+          const endDate = addToCartDto.endDate ? new Date(addToCartDto.endDate) : undefined;
+          const cart = await this.cartService.addToCart(
+              addToCartDto.productId,
+              addToCartDto.quantity,
+              startDate,
+              endDate
+          );
+          return cart;
+      } catch (error) {
+          throw new HttpException({
+              status: HttpStatus.BAD_REQUEST,
+              error: error.message,
+          }, HttpStatus.BAD_REQUEST);
+      }
   }
+
   @Delete('item/:productId')
   async deleteItemFromCart(@Param('productId') productId: string) {
     try {
@@ -58,24 +71,5 @@ export class CartController {
       throw new BadRequestException('Error deleting item from cart');
     }
   }
-  // @Delete()
-  // async deleteCart() {
-  //   try {
-  //     await this.cartService.deleteCart();
-  //   } catch (error) {
-  //     console.error('Error deleting cart:', error.message);
-  //     throw new BadRequestException('Error deleting cart');
-  //   }
-  // }
-
-  // @Delete('item/:productId')
-  // async deleteItemFromCart(@Param('productId') productId: string, @Body() deleteItemDto: DeleteItemDto) {
-  //   deleteItemDto.productId = productId;
-  //   try {
-  //     return await this.cartService.deleteItemFromCart(deleteItemDto);
-  //   } catch (error) {
-  //     console.error('Error deleting item from cart:', error.message);
-  //     throw new BadRequestException('Error deleting item from cart');
-  //   }
-  // }
+  
 }

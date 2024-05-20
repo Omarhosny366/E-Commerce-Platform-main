@@ -78,4 +78,11 @@ export class AddressService {
         const address = await this.addressModel.findOne({ _id: addressId, User_id: userId }).exec();
         return !!address;
     }
+    async getAddressById(addressId: string): Promise<Address> {
+        const address = await this.addressModel.findById(addressId).exec();
+        if (!address) {
+          throw new NotFoundException(`Address with id ${addressId} not found`);
+        }
+        return address;
+      }
 }

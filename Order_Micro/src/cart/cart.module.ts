@@ -4,10 +4,11 @@ import { CartController } from './cart.controller';
 import { CartService } from './cart.service';
 import { Cart, CartSchema } from './schemas/cart.schema';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { OrderModule } from 'src/order/order.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Cart.name , schema: CartSchema }]),
+    MongooseModule.forFeature([{ name: Cart.name, schema: CartSchema }]),
     ClientsModule.register([
       {
         name: 'KAFKA_SERVICE',
@@ -22,8 +23,10 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         },
       },
     ]),
+    OrderModule,
   ],
   controllers: [CartController],
   providers: [CartService],
+  exports: [CartService], // Export CartService if it is used in other modules
 })
 export class CartModule {}

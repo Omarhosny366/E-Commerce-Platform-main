@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type CartDocument = Cart & Document;
+export type OrderDocument = Order & Document;
 
 @Schema()
-export class Cart extends Document {
+export class Order extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
@@ -19,12 +19,21 @@ export class Cart extends Document {
     }],
     default: []
   })
-  items: { product_id: Types.ObjectId; quantity: number; price: number; type: string; material: Object; dimensions: Object }[];
+  items: { product_id: Types.ObjectId; quantity: number; price: number; type: string; startDate: Date; endDate: Date; material: Object; dimensions: Object }[];
 
-  @Prop({ type: Number, default: 0 })
-  totalPrice: number;
+  @Prop({ type: Types.Map, required: true })
+  address: Map<string, any>;
 
-  @Prop({ type: Number, default: 0, required: false })
+  @Prop({ type: Number, required: true })
+  total: number;
+
+  @Prop({ type: String, default: 'Placed' })
+  status: string;
+
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
+
+  @Prop({ type: Number, required: false })
   downpayment: number;
 
   @Prop({ type: Date, required: false })
@@ -34,4 +43,4 @@ export class Cart extends Document {
   endDate: Date;
 }
 
-export const CartSchema = SchemaFactory.createForClass(Cart);
+export const OrderSchema = SchemaFactory.createForClass(Order);

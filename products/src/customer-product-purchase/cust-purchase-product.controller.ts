@@ -50,7 +50,7 @@ export class CustPurchaseProductController {
   }
 
   
-  @MessagePattern('get.product.price')
+  @MessagePattern('get.product.pricee')
   async handleProductPriceRequest(@Payload() message) {
     try {
       const { productId } = message;
@@ -69,8 +69,9 @@ export class CustPurchaseProductController {
       throw error;
     }
   }
-  @MessagePattern('get.product.type')
-  async handleProducttypeRequest(@Payload() message) {
+
+  @MessagePattern('get.product.typee')
+  async handleProductTypeRequest(@Payload() message) {
     try {
       const { productId } = message;
       if (!productId) {
@@ -84,11 +85,12 @@ export class CustPurchaseProductController {
 
       return { type: productDetails.type };
     } catch (error) {
-      console.error('Error handling product price request:', error.message);
+      console.error('Error handling product type request:', error.message);
       throw error;
     }
   }
-  @MessagePattern('get.product.dimm')
+
+  @MessagePattern('get.product.dimmm')
   async handleProductDimmRequest(@Payload() message) {
     try {
       const { productId } = message;
@@ -103,13 +105,13 @@ export class CustPurchaseProductController {
 
       return { dimensions: productDetails.dimensions };
     } catch (error) {
-      console.error('Error handling product material request:', error.message);
+      console.error('Error handling product dimensions request:', error.message);
       throw error;
     }
   }
 
-  @MessagePattern('get.product.mat')
-  async handleProductDimRequest(@Payload() message) {
+  @MessagePattern('get.product.matt')
+  async handleProductMatRequest(@Payload() message) {
     try {
       const { productId } = message;
       if (!productId) {

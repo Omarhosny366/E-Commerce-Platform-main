@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class ProductDetailsDto {
@@ -38,15 +38,22 @@ class ProductDetailsDto {
   @IsNotEmpty()
   end_date: string;
 }
+// dto/add-to-cart.dto.ts
 
 export class AddToCartDto {
   @IsString()
-  @IsNotEmpty()
   productId: string;
 
   @IsNumber()
-  @IsNotEmpty()
   quantity: number;
+
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
+
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
 
   @ValidateNested()
   @Type(() => ProductDetailsDto)
