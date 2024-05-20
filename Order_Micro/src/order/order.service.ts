@@ -174,6 +174,6 @@ export class OrderService {
       userId,
       'items.type': 'Purchase'
     }).exec();
-    return purchaseOrders.map(order => this.addRemainingAmount(order));
+    return purchaseOrders;
   }
 }
