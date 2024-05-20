@@ -1,4 +1,43 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class ProductDetailsDto {
+  @IsString()
+  @IsNotEmpty()
+  type: string;
+
+  @IsString()
+  @IsNotEmpty()
+  dimensions: string;
+
+  @IsString()
+  @IsNotEmpty()
+  color: string;
+
+  @IsString()
+  @IsNotEmpty()
+  material: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  price: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  quantity: number;
+
+  @IsString()
+  @IsNotEmpty()
+  start_date: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  duration: number;
+
+  @IsString()
+  @IsNotEmpty()
+  end_date: string;
+}
 
 export class AddToCartDto {
   @IsString()
@@ -9,7 +48,7 @@ export class AddToCartDto {
   @IsNotEmpty()
   quantity: number;
 
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
+  @ValidateNested()
+  @Type(() => ProductDetailsDto)
+  productDetails: ProductDetailsDto;
 }

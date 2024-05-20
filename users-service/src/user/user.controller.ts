@@ -139,8 +139,7 @@ export class UserController {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
-
-// @MessagePattern('sendID')
+  
 @Get('profile')
 @HttpCode(HttpStatus.OK)
 async getProfile(@Req() req) {

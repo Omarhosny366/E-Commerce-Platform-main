@@ -7,7 +7,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Cart.name, schema: CartSchema }]),
+    MongooseModule.forFeature([{ name: Cart.name , schema: CartSchema }]),
     ClientsModule.register([
       {
         name: 'KAFKA_SERVICE',

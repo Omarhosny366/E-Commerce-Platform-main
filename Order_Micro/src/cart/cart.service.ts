@@ -1,15 +1,28 @@
-import { Injectable } from '@nestjs/common';
+
+
+
+import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { ClientKafka } from '@nestjs/microservices';
 import { Cart } from './schemas/cart.schema';
-import { CreateCartDto } from './dto/create-cart.dto';
-import { AddToCartDto } from './dto/add-to-cart.dto';
-import { DeleteItemDto } from './dto/delete-item.dto';
 import { UserSingleton } from './userSingleton';
 
 @Injectable()
-export class CartService {
-  constructor(@InjectModel(Cart.name) private readonly cartModel: Model<Cart>) {}
+export class CartService implements OnModuleInit {
+  constructor(
+    @InjectModel(Cart.name) private readonly cartModel: Model<Cart>,
+    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
+  ) {}
+
+  async onModuleInit() {
+    this.kafkaClient.subscribeToResponseOf('get.product.price');
+    this.kafkaClient.subscribeToResponseOf('get.product.mat');
+    this.kafkaClient.subscribeToResponseOf('get.product.type');
+    this.kafkaClient.subscribeToResponseOf('get.product.dimm');
+
+    await this.kafkaClient.connect();
+  }
 
   private getCurrentUserId(): string {
     const userSingleton = UserSingleton.getInstance();
@@ -20,50 +33,124 @@ export class CartService {
     return currentUser.id;
   }
 
-  async createCart(createCartDto: CreateCartDto): Promise<Cart> {
-    const userId = this.getCurrentUserId();
-    createCartDto.userId = userId;
-    const createdCart = new this.cartModel(createCartDto);
-    return createdCart.save();
-  }
-
-  async addToCart(addToCartDto: AddToCartDto): Promise<Cart> {
-    const userId = this.getCurrentUserId();
-    const cart = await this.cartModel.findOne({ userId });
-    if (cart) {
-      cart.product_ids.push(addToCartDto.productId);
-      cart.quantity += addToCartDto.quantity;
-      return cart.save();
+  async getProductPrice(productId: string): Promise<number> {
+    console.log(`Requesting product price for ID: ${productId}`);
+    try {
+      const response = await this.kafkaClient.send('get.product.price', { productId }).toPromise();
+      console.log(`Received product price: ${response.price}`);
+      return response.price;
+    } catch (error) {
+      console.error('Error fetching product price:', error);
+      throw new Error('Failed to fetch product price');
     }
-    // If no cart found, create a new cart
-    const newCart: CreateCartDto = {
-      product_ids: [addToCartDto.productId],
-      price: 0, // Update as necessary
-      quantity: addToCartDto.quantity,
-      userId,
-    };
-    return this.createCart(newCart);
+  }
+  async getProductType(productId: string): Promise<number> {
+    console.log(`Requesting product price for ID: ${productId}`);
+    try {
+      const response = await this.kafkaClient.send('get.product.type', { productId }).toPromise();
+      console.log(`Received product type: ${response.type}`);
+      return response.type;
+    } catch (error) {
+      console.error('Error fetching product type:', error);
+      throw new Error('Failed to fetch product type');
+    }
+  }
+  async getProductmat(productId: string): Promise<number> {
+    console.log(`Requesting product dim for ID: ${productId}`);
+    try {
+      const response = await this.kafkaClient.send('get.product.mat', { productId }).toPromise();
+      console.log(`Received product type: ${response.material}`);
+      return response.material;
+    } catch (error) {
+      console.error('Error fetching material type:', error);
+      throw new Error('Failed to fetch material type');
+    }
+  }
+  async getProductdimm(productId: string): Promise<number> {
+    console.log(`Requesting product dim for ID: ${productId}`);
+    try {
+      const response = await this.kafkaClient.send('get.product.dimm', { productId }).toPromise();
+      console.log(`Received product type: ${response.dimensions}`);
+      return response.dimensions;
+    } catch (error) {
+      console.error('Error fetching dimensions type:', error);
+      throw new Error('Failed to fetch dimensions type');
+    }
   }
 
-  async deleteCart(): Promise<void> {
+  async addToCart(productId: string, quantity: number): Promise<Cart> {
     const userId = this.getCurrentUserId();
-    await this.cartModel.deleteOne({ userId });
+    const productPrice = await this.getProductPrice(productId);
+    const productType = await this.getProductType(productId);
+    const productdim = await this.getProductmat(productId);
+    const productdimm = await this.getProductdimm(productId);
+  
+    if (productPrice == null) {
+      throw new Error('Product price not found');
+    }
+  
+    let cart = await this.cartModel.findOne({ userId }).exec();
+    if (!cart) {
+      cart = new this.cartModel({
+        userId: userId,
+        items: []
+      });
+    } else {
+      if (cart.items.length > 0 && cart.items[0].type !== productType.toString()) {
+        throw new Error(`Cart already has items of type clean it to add another type "${cart.items[0].type}"`);
+      }
+    }
+  
+    const itemIndex = cart.items.findIndex(item => item.product_id.toString() === productId);
+    if (itemIndex > -1) {
+      cart.items[itemIndex].quantity += quantity;
+    } else {
+      cart.items.push({
+        product_id: new Types.ObjectId(productId),
+        quantity: quantity,
+        price: productPrice,
+        type: productType.toString(),
+        material: productdim,
+        dimensions: productdimm
+      });
+    }
+  
+    // Calculate total price
+    cart.totalPrice = cart.items.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+  
+    await cart.save();
+    return cart;
   }
+  
 
-  async deleteItemFromCart(productId: string): Promise<Cart> {
+  async deleteItemFromCart(itemId: string): Promise<Cart> {
     const userId = this.getCurrentUserId();
-    const cart = await this.cartModel.findOne({ userId });
+    let cart = await this.cartModel.findOne({ userId }).exec();
     if (!cart) {
       throw new Error('Cart not found');
     }
 
-    const originalLength = cart.product_ids.length;
-    cart.product_ids = cart.product_ids.filter(id => id.toString() !== productId.toString());
-
-    if (cart.product_ids.length === originalLength) {
-      throw new Error(`Product ID ${productId} not found in cart`);
+    const itemIndex = cart.items.findIndex(item => item.product_id.toString() === itemId);
+    if (itemIndex === -1) {
+      throw new Error(`Item ID ${itemId} not found in cart`);
     }
 
-    return cart.save();
+    cart.items.splice(itemIndex, 1);
+
+    if (cart.items.length === 0) {
+      // Delete the cart if it has no items
+      await this.cartModel.deleteOne({ userId });
+      return null; // Return null to indicate that the cart was deleted
+    }
+
+    // Calculate total price
+    cart.totalPrice = cart.items.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+
+    await cart.save();
+    return cart;
   }
 }

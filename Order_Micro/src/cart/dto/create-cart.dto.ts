@@ -1,19 +1,15 @@
-import { IsNotEmpty, IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 
 export class CreateCartDto {
+  @IsString()
+  userId: string;
+
   @IsArray()
-  @IsNotEmpty()
   product_ids: string[];
 
   @IsNumber()
-  @IsNotEmpty()
-  price: number;
-
-  @IsNumber()
-  @IsNotEmpty()
   quantity: number;
 
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
+  @IsNumber()
+  price: number;
 }

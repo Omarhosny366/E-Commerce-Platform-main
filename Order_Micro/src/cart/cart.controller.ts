@@ -1,10 +1,10 @@
-import { Controller, Inject, Post, Body, Patch, Delete,Param } from '@nestjs/common';
+import { Controller, Inject, Patch, Delete, Param, Body, BadRequestException } from '@nestjs/common';
 import { ClientKafka, EventPattern, Payload } from '@nestjs/microservices';
 import { CartService } from './cart.service';
-import { CreateCartDto } from './dto/create-cart.dto';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { DeleteItemDto } from './dto/delete-item.dto';
 import { UserSingleton } from './userSingleton';
+import { ProductSingleton } from './productSingleton';
 
 @Controller('cart')
 export class CartController {
@@ -14,55 +14,68 @@ export class CartController {
   ) {}
 
   @EventPattern('user.logged.in')
-  async handleUserLoggedIn(@Payload() message) {
-    let user;
-
+  async handleUserLoggedIn(@Payload() message: any) {
     try {
-      user = typeof message.value === 'string' ? JSON.parse(message.value) : message.value;
+      const user = typeof message.value === 'string' ? JSON.parse(message.value) : message.value;
+      console.log('User logged in:', user);
+
+      const userSingleton = UserSingleton.getInstance();
+      userSingleton.setCurrentUser(user);
     } catch (error) {
       console.error('Error parsing user data:', error);
-      return;
     }
-
-    console.log('User logged in:', user);
-
-    // Store the user in the singleton
-    const userSingleton = UserSingleton.getInstance();
-    userSingleton.setCurrentUser(user);
   }
 
-  @Post()
-  async createCart(@Body() createCartDto: CreateCartDto) {
+  @EventPattern('product.created')
+  async handleProductCreated(@Payload() message: any) {
     try {
-      return await this.cartService.createCart(createCartDto);
+      const productData = typeof message.value === 'string' ? JSON.parse(message.value) : message.value;
+      console.log('Product created:', productData);
+
+      const productSingleton = ProductSingleton.getInstance();
+      productSingleton.setCurrentProduct(productData);
+
+      console.log('Current product in singleton:', productSingleton.getCurrentProduct());
     } catch (error) {
-      console.error('Error creating cart:', error);
-      throw error;
+      console.error('Error parsing product data:', error);
     }
   }
-
   @Patch()
   async addToCart(@Body() addToCartDto: AddToCartDto) {
     try {
-      return await this.cartService.addToCart(addToCartDto);
+      return await this.cartService.addToCart(addToCartDto.productId, addToCartDto.quantity);
     } catch (error) {
       console.error('Error adding to cart:', error);
       throw error;
     }
   }
-
-  @Delete()
-  async deleteCart() {
-    try {
-      await this.cartService.deleteCart();
-    } catch (error) {
-      console.error('Error deleting cart:', error);
-      throw error;
-    }
-  }
-
   @Delete('item/:productId')
   async deleteItemFromCart(@Param('productId') productId: string) {
-    return this.cartService.deleteItemFromCart(productId);
+    try {
+      return await this.cartService.deleteItemFromCart(productId);
+    } catch (error) {
+      console.error('Error deleting item from cart:', error.message);
+      throw new BadRequestException('Error deleting item from cart');
+    }
   }
+  // @Delete()
+  // async deleteCart() {
+  //   try {
+  //     await this.cartService.deleteCart();
+  //   } catch (error) {
+  //     console.error('Error deleting cart:', error.message);
+  //     throw new BadRequestException('Error deleting cart');
+  //   }
+  // }
+
+  // @Delete('item/:productId')
+  // async deleteItemFromCart(@Param('productId') productId: string, @Body() deleteItemDto: DeleteItemDto) {
+  //   deleteItemDto.productId = productId;
+  //   try {
+  //     return await this.cartService.deleteItemFromCart(deleteItemDto);
+  //   } catch (error) {
+  //     console.error('Error deleting item from cart:', error.message);
+  //     throw new BadRequestException('Error deleting item from cart');
+  //   }
+  // }
 }

@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class DeleteItemDto {
   @IsString()
   @IsNotEmpty()
   productId: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  userId: string;
+  quantity: number;
 }
