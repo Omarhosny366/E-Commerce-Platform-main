@@ -45,10 +45,18 @@ export class PaymentService {
         order_id: orderId,
         billing_data,
         currency: "EGP",
-        integration_id: 2329228, // Replace with your integration id
+        integration_id: 4580362, // Replace with your integration id
       };
       const paymentKeyResponse: AxiosResponse<PaymentKeyResponseDTO> = await axios.post(paymentKeyUrl, paymentKeyData, { headers });
-      return paymentKeyResponse.data.token;
+      const paymentToken = paymentKeyResponse.data.token;
+
+      // Construct the iframe URL
+      const iframeUrl = `https://accept.paymob.com/api/acceptance/iframes/847842?payment_token=${paymentToken}`;
+      
+      // Add the billing data
+      console.log("Billing data:", billing_data);
+
+      return iframeUrl;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Error in pay function:", error.response?.data);
@@ -81,7 +89,5 @@ export class PaymentService {
         // Rethrow the error for the caller to handle
         throw error;
     }
-}
-
-
+  }
 }

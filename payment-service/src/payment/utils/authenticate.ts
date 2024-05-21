@@ -1,7 +1,12 @@
+import * as dotenv from "dotenv";
 import axios, { AxiosResponse } from "axios";
-import dotenv from "dotenv";
 
 dotenv.config();
+
+// Log the environment variables to check if they are loaded correctly
+console.log("PAY_API:", process.env.PAY_API);
+console.log("USERNAME:", process.env.USERNAME);
+console.log("PASSWORD:", process.env.PASSWORD);
 
 // Set your Paymob API token
 const API_TOKEN = process.env.PAY_API as string;

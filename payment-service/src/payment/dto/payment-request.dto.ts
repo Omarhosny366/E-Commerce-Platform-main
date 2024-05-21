@@ -3,7 +3,7 @@ import { BillingDataDTO } from './billing-data.dto';
 
 export class PaymentRequestDTO {
   order_cart: OrderItemDTO[];
-  billing_data: BillingDataDTO;
+  billing_data: BillingDataDTO[];
   amount_cents: string;
   delivery_needed: string;
 }

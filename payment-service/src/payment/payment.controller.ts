@@ -8,8 +8,12 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('checkout')
-  async checkout(@Body() paymentRequestDTO: PaymentRequestDTO): Promise<string | undefined> {
-    return this.paymentService.pay(paymentRequestDTO);
+  async checkout(@Body() paymentRequestDTO: PaymentRequestDTO): Promise<{ iframeUrl: string } | undefined> {
+    const iframeUrl = await this.paymentService.pay(paymentRequestDTO);
+    if (iframeUrl) {
+      return { iframeUrl };
+    }
+    return undefined;
   }
 
   @Get('get-transaction/:id')
