@@ -8,6 +8,22 @@ import { UserSingleton } from './userSingleton';
 @Injectable()
 export class CustomizedProductService {
   constructor(private readonly customizedProductRepository: CustomizedProductRepository) {}
+  
+  async updateProductQuantity(productId: string, quantity: number): Promise<void> {
+    try {
+      const product = await this.customizedProductRepository.findById(productId);
+      if (!product) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
+      product.quantity = quantity;
+      await this.customizedProductRepository.save(product);
+      console.log(`Updated product quantity for ID: ${productId} to ${quantity}`);
+    } catch (error) {
+      console.error(`Error updating product quantity for ID: ${productId}`, error);
+      throw new Error('Failed to update product quantity');
+    }
+  }
 
   private getCurrentUserId(): string {
     const userSingleton = UserSingleton.getInstance();

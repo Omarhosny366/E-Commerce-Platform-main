@@ -1,13 +1,30 @@
-import { Controller, Delete, Post, Param, Body, Put, NotFoundException } from '@nestjs/common';
+import { Controller, Delete, Post, Param, Body, Put, NotFoundException, OnModuleInit, Inject } from '@nestjs/common';
 import { CustRentProductService } from './cust-rent-product.service';
 import { CreateCustRentProductDto } from './dto/create-cust-rent-product.dto';
 import { UpdateCustRentProductDto } from './dto/update-cust-rent-product.dto';
-import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('customer-rent-products')
-export class CustRentProductController {
+export class CustRentProductController implements OnModuleInit {
+  @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka
   constructor(private readonly custRentProductService: CustRentProductService) {}
+  
+  async onModuleInit() {
+    this.kafkaClient.subscribeToResponseOf('update.product.quantity');
+    await this.kafkaClient.connect();
+  }
 
+  @MessagePattern('update.product.quantity')
+  async handleUpdateProductQuantity(@Payload() data: { productId: string; quantity: number }) {
+    const { productId, quantity } = data;
+    try {
+      console.log(`Received request to update quantity for product ID: ${productId} to ${quantity}`);
+      await this.custRentProductService.updateProductQuantity(productId, quantity);
+    } catch (error) {
+      console.error(`Error handling product quantity update request: ${error.message}`);
+      throw error;
+    }
+  }
   @Post()
   async createProduct(@Body() createCustRentProductDto: CreateCustRentProductDto): Promise<any> {
     try {

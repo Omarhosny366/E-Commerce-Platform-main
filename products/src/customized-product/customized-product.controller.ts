@@ -1,14 +1,31 @@
-import { Controller, Delete, Post, Param, Body, Put, NotFoundException } from '@nestjs/common';
+import { Controller, Delete, Post, Param, Body, Put, NotFoundException, Inject } from '@nestjs/common';
 import { CustomizedProductService } from './customized-product.service';
 import { CreateCustomizedProductDto } from './dto/create-customized-product.dto';
 import { UpdateCustomizedProductDto } from './dto/update-customized-product.dto';
-import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { UserSingleton } from './userSingleton';
 
 @Controller('customized-products')
 export class CustomizedProductController {
+    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka 
   constructor(private readonly customizedProductService: CustomizedProductService) {}
 
+  async onModuleInit() {
+    this.kafkaClient.subscribeToResponseOf('update.product.quantity');
+    await this.kafkaClient.connect();
+  }
+
+  @MessagePattern('update.product.quantity')
+  async handleUpdateProductQuantity(@Payload() data: { productId: string; quantity: number }) {
+    const { productId, quantity } = data;
+    try {
+      console.log(`Received request to update quantity for product ID: ${productId} to ${quantity}`);
+      await this.customizedProductService.updateProductQuantity(productId, quantity);
+    } catch (error) {
+      console.error(`Error handling product quantity update request: ${error.message}`);
+      throw error;
+    }
+  }
   @EventPattern('user.logged.in')
 async handleUserLoggedIn(@Payload() message: any) {
   try {

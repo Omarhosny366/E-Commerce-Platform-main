@@ -19,7 +19,21 @@ export class CustRentProductService {
             await this.kafkaClient.connect();
           }
           
+          async updateProductQuantity(productId: string, quantity: number): Promise<void> {
+            try {
+              const product = await this.custRentProductRepository.findById(productId);
+              if (!product) {
+                throw new NotFoundException(`Product with id ${productId} not found`);
+              }
         
+              product.quantity = quantity;
+              await this.custRentProductRepository.save(product);
+              console.log(`Updated product quantity for ID: ${productId} to ${quantity}`);
+            } catch (error) {
+              console.error(`Error updating product quantity for ID: ${productId}`, error);
+              throw new Error('Failed to update product quantity');
+            }
+          }
           async getProductDetails(productId: string): Promise<CustRentProduct | null> {
             return this.productModel.findById(productId).exec();
           }
