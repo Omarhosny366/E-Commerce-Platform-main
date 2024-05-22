@@ -1,0 +1,73 @@
+.background {
+    background-color: #ede3d6;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh; /* Ensure the background covers at least the full viewport height */
+    width: 100%;
+    padding: 20px; /* Add some padding to avoid content touching the edges */
+    box-sizing: border-box;
+    overflow: auto; /* Allow scrolling */
+    margin-bottom: 0.1vh; /* Add bottom margin to account for footer height */
+    text-align: center;
+    font-size: larger;
+    font-size: 20px;
+  }
+  .parentContainer {
+    display: flex;
+    align-items: center; /* Centers the button vertically */
+    justify-content: space-between; /* This spreads out the child elements */
+  }
+  
+  .deleteButton {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .deleteButton img {
+    width: 30px; /* Adjust as needed */
+    height: 35px; /* Adjust as needed */
+  }
+  .deleteButton img:hover {
+    transform: scale(1.1);
+  }
+  
+  
+  .gridContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  
+  .card {
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+  }
+  
+  .productImage {
+    width: 100%;
+    height: auto;
+  }
+  
+  .productDetails {
+    margin-top: 10px;
+  }
+  
+  .productName {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .productPrice {
+    color: gray;
+  }
+  

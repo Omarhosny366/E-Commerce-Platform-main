@@ -55,38 +55,37 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
+  
     const otp = this.generateOTP();
     user.OTP = otp;
     await user.save();
-
+  
     const mailOptions = {
       from: 'seelaz.info@gmail.com',
       to: email,
       subject: 'Reset Password OTP',
       text: `Your OTP for resetting the password is: ${otp}`,
     };
-
+  
     await this.transporter.sendMail(mailOptions);
   }
-
+  
   async resetPassword(resetPassDto: ResetPassDto): Promise<{ message: string }> {
     const { email, password, OTP } = resetPassDto;
     const user = await this.findOneByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
+  
     if (user.OTP !== OTP) {
       throw new NotFoundException('Invalid OTP');
     }
-
+  
     const hashedPassword = await bcrypt.hash(password, 10);
-
     await this.findOneAndUpdate({ email }, { password: hashedPassword, OTP: null });
     return { message: 'Password reset successfully' };
   }
-
+  
   
     async getUserById(): Promise<User> {
       const userId = this.userSingleton.getCurrentUser()?._id; 
@@ -105,12 +104,15 @@ export class UserService {
     }
   
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = new this.userModel(createUserDto);
-    await this.isEmailUnique(createUserDto.email);
-    await this.sendVerificationEmail(createUserDto.email, this.generateOTP());
-    return await user.save();
-  }
+    async create(createUserDto: CreateUserDto): Promise<User> {
+      const user = new this.userModel(createUserDto);
+      await this.isEmailUnique(createUserDto.email);
+      user.OTP = this.generateOTP();
+    
+      await this.sendVerificationEmail(createUserDto.email, user.OTP);
+      return await user.save();
+    }
+    
 
   private async isEmailUnique(email: string) {
     const user = await this.userModel.findOne({ email });
@@ -254,14 +256,15 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
+  
     if (user.OTP !== otp) {
       throw new BadRequestException('Invalid OTP');
     }
-
-    user.OTP = null;
-    user.save();
+  
+    user.OTP = null; // Clear OTP after successful verification
+    await user.save();
   }
+  
 
   private async sendVerificationEmail(email: string, otp: string): Promise<void> {
     const mailOptions = {
@@ -278,7 +281,6 @@ export class UserService {
       throw new BadRequestException('Failed to send verification email');
     }
   }
-
   async getUsers(): Promise<User[]> {
     return this.find({});
   }

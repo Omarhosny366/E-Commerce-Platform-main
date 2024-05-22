@@ -1,20 +1,12 @@
-import Head from 'next/head'
-import Link from 'next/link'
-import styles from '../styles/Home.module.css'
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+export default function Index() {
+  const router = useRouter();
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Simple Next.js demo! See <Link href="/cars">Cars</Link>
-        </h1>
-        </main>
-    </div>
-  )
+  useEffect(() => {
+    router.push('/login');
+  }, [router]);
+
+  return null;
 }

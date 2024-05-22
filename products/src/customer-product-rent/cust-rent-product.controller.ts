@@ -1,8 +1,10 @@
-import { Controller, Delete, Post, Param, Body, Put, NotFoundException, OnModuleInit, Inject } from '@nestjs/common';
+import { Controller, Delete, Post, Param, Body, Put, NotFoundException, OnModuleInit, Inject, Get } from '@nestjs/common';
 import { CustRentProductService } from './cust-rent-product.service';
 import { CreateCustRentProductDto } from './dto/create-cust-rent-product.dto';
 import { UpdateCustRentProductDto } from './dto/update-cust-rent-product.dto';
 import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { CustRentProduct } from './schemas/cust-rent-product.schema';
+
 
 @Controller('customer-rent-products')
 export class CustRentProductController implements OnModuleInit {
@@ -13,7 +15,35 @@ export class CustRentProductController implements OnModuleInit {
     this.kafkaClient.subscribeToResponseOf('update.product.quantity');
     await this.kafkaClient.connect();
   }
+  @MessagePattern('get.product.namee')
+  async handleProductNameRequest(@Payload() message) {
+    try {
+      const { productId } = message;
+      if (!productId) {
+        throw new Error('Invalid message format: productId is missing');
+      }
 
+      const productDetails = await this.custRentProductService.getProductDetails(productId);
+      if (!productDetails) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
+      return { name: productDetails.name };
+    } catch (error) {
+      console.error('Error handling product price request:', error.message);
+      throw error;
+    }
+  }
+  @Get(':id')
+  async getProductDetails(@Param('id') id: string): Promise<CustRentProduct> {
+    return this.custRentProductService.getProductDetails(id);
+  }
+
+  @Get()
+  async getAllProducts(): Promise<CustRentProduct[]> {
+    return this.custRentProductService.getAllProducts();
+  }
+  
   @MessagePattern('update.product.quantity')
   async handleUpdateProductQuantity(@Payload() data: { productId: string; quantity: number }) {
     const { productId, quantity } = data;

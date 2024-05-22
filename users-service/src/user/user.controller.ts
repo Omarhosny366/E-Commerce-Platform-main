@@ -103,22 +103,22 @@ export class UserController {
     }
   }
 
-  @Post('reset-password')
+  @Post('send-reset-password-email')
   @HttpCode(HttpStatus.OK)
-  async resetPassword(@Body() ResetPassDto: ResetPassDto) {
+  async sendResetPasswordEmail(@Body('email') email: string) {
     try {
-      return await this.userService.resetPassword(ResetPassDto);
+      await this.userService.sendResetPasswordEmail(email);
+      return { message: 'Reset password email sent successfully' };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  @Post('send-reset-password-email')
+  @Post('reset-password')
   @HttpCode(HttpStatus.OK)
-  async sendResetPasswordEmail(@Body() email: string) {
+  async resetPassword(@Body() resetPassDto: ResetPassDto) {
     try {
-      await this.userService.sendResetPasswordEmail(email);
-      return { message: 'Reset password email sent successfully' };
+      return await this.userService.resetPassword(resetPassDto);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

@@ -1,3 +1,3 @@
 export class AddProductsDto {
-   ProductID: string[];
+   ProductID: string;
 }

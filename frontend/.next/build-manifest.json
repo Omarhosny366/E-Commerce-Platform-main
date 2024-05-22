@@ -12,10 +12,10 @@
   ],
   "rootMainFiles": [],
   "pages": {
-    "/YourCart": [
+    "/Rent_itemPage": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/YourCart.js"
+      "static/chunks/pages/Rent_itemPage.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
@@ -27,15 +27,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/itemPage": [
+    "/wishlist": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/itemPage.js"
-    ],
-    "/profile": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/profile.js"
+      "static/chunks/pages/wishlist.js"
     ]
   },
   "ampFirstPages": []

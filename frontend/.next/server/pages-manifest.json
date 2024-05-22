@@ -2,8 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/Home": "pages/Home.js",
-  "/profile": "pages/profile.js",
-  "/YourCart": "pages/YourCart.js",
-  "/itemPage": "pages/itemPage.js"
+  "/wishlist": "pages/wishlist.js",
+  "/Rent_itemPage": "pages/Rent_itemPage.js"
 }

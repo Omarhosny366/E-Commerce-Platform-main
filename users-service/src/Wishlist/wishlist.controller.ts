@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpException, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { AddProductsDto } from './dto/add-wishlist.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -7,33 +7,23 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class WishlistController {
     constructor(private readonly wishlistService: WishlistService) {}
 
-    @Post('create')
-    @HttpCode(HttpStatus.CREATED)
-    async createWishlist(@Body() addProductsDto: AddProductsDto) {
-        try {
-            return await this.wishlistService.createWishlist(addProductsDto);
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-        }
+    @Post('add-products')
+    async addProductsToWishlist(@Body() addProductsDto: AddProductsDto) {
+      try {
+        const wishlist = await this.wishlistService.createOrUpdateWishlist(addProductsDto);
+        return { success: true, wishlist };
+      } catch (error) {
+        return { success: false, message: error.message };
+      }
     }
 
-    @Post('add-products/:wishlistId')
-    @HttpCode(HttpStatus.OK)
-    async addProductsToWishlist(@Param('wishlistId') wishlistId: string, @Body() productIds: string[]) {
-        try {
-            return await this.wishlistService.addProductsToWishlist(wishlistId, productIds);
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-        }
+    @Delete('remove-product')
+    async removeProductFromWishlist(@Body('productId') productId: string): Promise<void> {
+      await this.wishlistService.removeProductFromWishlist(productId);
     }
 
-    @Post('remove-product/:wishlistId')
-    @HttpCode(HttpStatus.OK)
-    async removeProductFromWishlist(@Param('wishlistId') wishlistId: string, @Body() productId: string) {
-        try {
-            return await this.wishlistService.removeProductFromWishlist(wishlistId, productId);
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-        }
+    @Get('')
+    async getAllWishlists() {
+        return this.wishlistService.getAllWishlists();
     }
 }

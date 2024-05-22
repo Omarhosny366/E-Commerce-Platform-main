@@ -1,8 +1,9 @@
-import { Controller, Delete, Post, Param, Body, Put, NotFoundException, OnModuleInit, Inject } from '@nestjs/common';
+import { Controller, Delete, Post, Param, Body, Put, NotFoundException, OnModuleInit, Inject, Get } from '@nestjs/common';
 import { CustPurchaseProductService } from './cust-purchase-product.service';
 import { CreateCustPurchaseProductDto } from './dto/create-cust-purchase-product.dto';
 import { UpdateCustPurchaseProductDto } from './dto/update-cust-purchase-product.dto';
 import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { CustPurchaseProduct } from './schemas/cust-purchase-product.schema';
 
 @Controller('customer-purchase-products')
 export class CustPurchaseProductController implements OnModuleInit {
@@ -25,6 +26,39 @@ export class CustPurchaseProductController implements OnModuleInit {
       throw error;
     }
   }
+
+  @MessagePattern('get.product.name')
+  async handleProductNameRequest(@Payload() message) {
+    try {
+      const { productId } = message;
+      if (!productId) {
+        throw new Error('Invalid message format: productId is missing');
+      }
+
+      const productDetails = await this.custPurchaseProductService.getProductDetails(productId);
+      if (!productDetails) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
+      return { name: productDetails.name };
+    } catch (error) {
+      console.error('Error handling product price request:', error.message);
+      throw error;
+    }
+  }
+
+
+
+  @Get(':id')
+  async getProductDetails(@Param('id') id: string): Promise<CustPurchaseProduct> {
+    return this.custPurchaseProductService.getProductDetails(id);
+  }
+
+  @Get()
+  async getAllProducts(): Promise<CustPurchaseProduct[]> {
+    return this.custPurchaseProductService.getAllProducts();
+  }
+  
   @Post()
   async createProduct(@Body() createCustPurchaseProductDto: CreateCustPurchaseProductDto): Promise<any> {
     try {

@@ -1,93 +1,103 @@
-// Register.js
-
 import React, { useState } from 'react';
-import { useRouter } from 'next/router'; // Import useRouter for navigation
-import styles from '../../styles/register.module.css'; // Import CSS module
+import { useRouter } from 'next/router';
+import axios from 'axios'; // Import axios for making HTTP requests
+import styles from '../../styles/register.module.css';
 
 const Register = () => {
   const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter(); // Get router object for navigation
+  const [error, setError] = useState(''); // State to handle error messages
+  const router = useRouter();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // Perform registration logic here
-    console.log('Registration form submitted');
-    // Example: Call API to register user
 
-    // Redirect to login page after registration
-    router.push('/login');
+    try {
+      const response = await axios.post('http://localhost:3000/user', {
+        email,
+        username,
+        phoneNumber,
+        password,
+      });
+
+      // Check for successful status range
+      if (response.status >= 200 && response.status < 300) {
+        console.log('Registration successful', response.data);
+        router.push('/verify');
+      } else {
+        setError('Failed to register. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error registering:', error);
+      setError('Failed to register. Please try again.');
+    }
   };
 
   return (
-   <div className={styles.background}>
-    <div className={styles.container}>
-      {/* Logo */}
-      <h1 className={styles.logo}>Register</h1>
+    <div className={styles.background}>
+      <div className={styles.container}>
+        <h1 className={styles.logo}>Register</h1>
 
-      {/* Registration Form */}
-      <form className={styles.form} onSubmit={handleRegister}>
-        <input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className={styles.input}
-          placeholder="Email or phone number"
-          required
-        />
-        <input
-          type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          className={styles.input}
-          placeholder="First Name"
-          required
-        />
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          className={styles.input}
-          placeholder="Last Name"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className={styles.input}
-          placeholder="Password"
-          required
-        />
-        <button type="submit" className={styles.registerButton}>
-          Register
+        <form className={styles.form} onSubmit={handleRegister}>
+          <input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+            placeholder="Email"
+            required
+          />
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className={styles.input}
+            placeholder="Username"
+            required
+          />
+          <input
+            type="text"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className={styles.input}
+            placeholder="Phone Number"
+            required
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={styles.input}
+            placeholder="Password"
+            required
+          />
+          {error && <p className={styles.error}>{error}</p>} {/* Display error message */}
+          <button type="submit" className={styles.registerButton}>
+            Register
+          </button>
+        </form>
+
+        <button
+          className={styles.toggleButton}
+          onClick={() => router.push('/login')}
+        >
+          Already have an account? Login
         </button>
-      </form>
 
-      {/* Login Toggle */}
-      <button
-        className={styles.toggleButton}
-        onClick={() => router.push('/login')} // Navigate to login page on click
-      >
-        Already have an account? Login
-      </button>
-
-      {/* Additional Content at the Bottom */}
-      <div className={styles.bottomContent}>
-        <h2 className={styles.descriptionHeading}>Welcome to Seelaz!</h2>
-        <p className={styles.description}>
-          Welcome to our premier destination for plastic pallets! Discover a wide selection of
-          colors, sizes, and durable materials conveniently curated in one place. Whether you
-          require solutions for storage, shipping, or organizational needs, we offer precisely what
-          you seek. Enjoy our diverse range and competitive pricing. Start your search for
-          high-quality plastic pallets from the comfort of your home today!
-        </p>
+        <div className={styles.bottomContent}>
+          <h2 className={styles.descriptionHeading}>Welcome to Seelaz!</h2>
+          <p className={styles.description}>
+            Welcome to our premier destination for plastic pallets! Discover a wide selection of
+            colors, sizes, and durable materials conveniently curated in one place. Whether you
+            require solutions for storage, shipping, or organizational needs, we offer precisely what
+            you seek. Enjoy our diverse range and competitive pricing. Start your search for
+            high-quality plastic pallets from the comfort of your home today!
+          </p>
+        </div>
       </div>
     </div>
-    </div>
-
   );
 };
 

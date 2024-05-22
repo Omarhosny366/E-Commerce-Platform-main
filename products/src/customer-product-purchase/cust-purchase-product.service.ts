@@ -9,6 +9,10 @@ export class CustPurchaseProductService {
     
     constructor(private readonly custPurchaseProductRepository: CustPurchaseProductRepository) {}
     
+    async getAllProducts(): Promise<CustPurchaseProduct[]> {
+        return this.custPurchaseProductRepository.find({});
+    }
+    
     async getProductDetails(productId: string): Promise<CustPurchaseProduct | null> {
         return this.custPurchaseProductRepository.findById(productId)   ;
       }

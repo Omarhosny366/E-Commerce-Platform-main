@@ -44,6 +44,8 @@
 .input {
   margin-bottom: 10px;
   padding: 10px;
+  color: #fff; /* Text color for better contrast with background */
+
   border: none; /* Remove default border */
   border-bottom: 1px solid #cccccc; /* Add bottom border */
   border-radius: 0px;

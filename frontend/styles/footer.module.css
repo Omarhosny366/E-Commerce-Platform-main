@@ -1,10 +1,8 @@
-/* styles/Home.module.css */
-
 .footer {
   height: 10vh; /* Adjust the height to make the footer smaller */
   padding: 10px 20px; /* Adjust padding as needed */
   background-color: #011526;
-  position: fixed;
+  position: relative; /* Changed from fixed to relative */
   bottom: 0;
   left: 0;
   right: 0;
@@ -17,4 +15,5 @@
   letter-spacing: normal;
   text-align: center;
   color: #f2522e;
+  padding-top: 40px;
 }

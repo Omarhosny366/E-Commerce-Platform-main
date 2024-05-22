@@ -13,7 +13,10 @@ export class CustRentProductService {
     constructor(private readonly custRentProductRepository: CustRentProductRepository,
         @InjectModel(CustRentProduct.name) private readonly productModel: Model<CustRentProduct>,
         @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka) { }
-     
+        async getAllProducts(): Promise<CustRentProduct[]> {
+            return this.custRentProductRepository.find({});
+        }
+        
         async onModuleInit() {
             this.kafkaClient.subscribeToResponseOf('get.product.details');
             await this.kafkaClient.connect();
