@@ -17,17 +17,22 @@
       this.kafkaClient.subscribeToResponseOf('get.product.mat');
       this.kafkaClient.subscribeToResponseOf('get.product.type');
       this.kafkaClient.subscribeToResponseOf('get.product.dimm');
+      this.kafkaClient.subscribeToResponseOf('get.product.qua');
       this.kafkaClient.subscribeToResponseOf('get.product.pricee');
       this.kafkaClient.subscribeToResponseOf('get.product.matt');
       this.kafkaClient.subscribeToResponseOf('get.product.typee');
       this.kafkaClient.subscribeToResponseOf('get.product.dimmm');
+      this.kafkaClient.subscribeToResponseOf('get.product.quaa');
       this.kafkaClient.subscribeToResponseOf('get.product.price.cus');
       this.kafkaClient.subscribeToResponseOf('get.product.mat.cus');
       this.kafkaClient.subscribeToResponseOf('get.product.type.cus');
       this.kafkaClient.subscribeToResponseOf('get.product.dimm.cus');
+      this.kafkaClient.subscribeToResponseOf('get.product.qua.cus');
+
 
       await this.kafkaClient.connect();
     }
+   
 
     private getCurrentUserId(): string {
       const userSingleton = UserSingleton.getInstance();
@@ -37,6 +42,35 @@
       }
       return currentUser.id;
     }
+
+   
+    async getProductQuantity(productId: string): Promise<number> {
+      console.log(`Requesting product price for ID: ${productId}`);
+      try {
+        const response = await this.kafkaClient.send('get.product.qua', { productId }).toPromise();
+        console.log(`Received product price: ${response.quantity}`);
+        return response.quantity;
+      } catch (error) {
+        console.error('Error fetching product price from rent service:', error);
+        try {
+          const response2 = await this.kafkaClient.send('get.product.quaa', { productId }).toPromise();
+          console.log(`Received product price from purchase service: ${response2.quantity}`);
+          return response2.quantity;
+        } catch (error2) {
+          console.error('Error fetching product price from purchase service:', error2);
+          try {
+            const response3 = await this.kafkaClient.send('get.product.qua.cus', { productId }).toPromise();
+            console.log(`Received product price from custom purchase service: ${response3.quantity}`);
+            return response3.quantity;
+          } catch (error3) {
+            console.error('Error fetching product price from custom purchase service:', error3);
+            throw new Error('Product price not found');
+          }
+        }
+      }
+    }
+
+
 
     async getProductPrice(productId: string): Promise<number> {
       console.log(`Requesting product price for ID: ${productId}`);
@@ -160,7 +194,10 @@
       const productType = await this.getProductType(productId);
       const productMat = await this.getProductmat(productId);
       const productDimm = await this.getProductdimm(productId);
-
+      let ProductQuantity= await this.getProductQuantity(productId);
+if (quantity>ProductQuantity){
+  throw new Error('no enough products in the stock the only available quantity is '+ ProductQuantity);
+     }
       if (productPrice == null) {
         throw new Error('Product price not found');
       }

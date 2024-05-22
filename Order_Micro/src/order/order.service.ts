@@ -28,22 +28,17 @@ export class OrderService {
     });
   }
 
-  async onModuleInit() {
-    this.kafkaClient.subscribeToResponseOf('get.address');
-    await this.kafkaClient.connect();
-  }
-
   private async isGuestUser() {
     let userSingleton = UserSingleton.getInstance();
     let currentUser = userSingleton.getCurrentUser();
     if (!currentUser) {
       throw new Error('User not logged in');
     }
-    let role= currentUser.role;
-    if(role=="guest"){
-        throw new Error('you have to login first 3shan tetlob');   
+    let role = currentUser.role;
+    if (role == "guest") {
+      throw new Error('You have to login first to place an order');
     }
-    }
+  }
 
   private getCurrentUserId(): string {
     let userSingleton = UserSingleton.getInstance();
@@ -75,17 +70,69 @@ export class OrderService {
     }
   }
 
+  async onModuleInit() {
+    this.kafkaClient.subscribeToResponseOf('get.product.qua');
+    this.kafkaClient.subscribeToResponseOf('get.product.quaa');
+    this.kafkaClient.subscribeToResponseOf('get.product.qua.cus');
+    this.kafkaClient.subscribeToResponseOf('get.address');
+    this.kafkaClient.subscribeToResponseOf('update.product.quantity');
+    await this.kafkaClient.connect();
+  }
+
+  async getProductQuantity(productId: string): Promise<number> {
+    console.log(`Requesting product quantity for ID: ${productId}`);
+    try {
+      const response = await this.kafkaClient.send('get.product.qua', { productId }).toPromise();
+      console.log(`Received product quantity: ${response.quantity}`);
+      return response.quantity;
+    } catch (error) {
+      console.error('Error fetching product quantity from rent service:', error);
+      try {
+        const response2 = await this.kafkaClient.send('get.product.quaa', { productId }).toPromise();
+        console.log(`Received product quantity from purchase service: ${response2.quantity}`);
+        return response2.quantity;
+      } catch (error2) {
+        console.error('Error fetching product quantity from purchase service:', error2);
+        try {
+          const response3 = await this.kafkaClient.send('get.product.qua.cus', { productId }).toPromise();
+          console.log(`Received product quantity from custom purchase service: ${response3.quantity}`);
+          return response3.quantity;
+        } catch (error3) {
+          console.error('Error fetching product quantity from custom purchase service:', error3);
+          throw new Error('Product quantity not found');
+        }
+      }
+    }
+  }
+
+  async updateProductQuantity(productId: string, quantity: number): Promise<void> {
+    try {
+      await this.kafkaClient.send('update.product.quantity', { productId, quantity }).toPromise();
+      console.log(`Updated product quantity for ID: ${productId} to ${quantity}`);
+    } catch (error) {
+      console.error(`Error updating product quantity for ID: ${productId}`, error);
+      throw new Error('Failed to update product quantity');
+    }
+}
+
   async placeOrder(addressId: string): Promise<OrderDocument> {
     await this.isGuestUser(); // Correctly call and wait for the guest check
     
-    let userId = this.getCurrentUserId();
-    let email = this.getCurrentUserEmail();
+    const userId = this.getCurrentUserId();
+    const email = this.getCurrentUserEmail();
     const address = await this.getAddressDetails(addressId);
     const cart = await this.cartService.getCartByUserId(userId);
 
-    // Extract startDate and endDate from the cart items
     const startDate = cart.startDate;
     const endDate = cart.endDate;
+
+    // Update quantities for each product in the cart
+    for (const item of cart.items) {
+        const productId = item.product_id.toString();
+      const currentQuantity = await this.getProductQuantity(productId);
+      const newQuantity = currentQuantity - item.quantity;
+      await this.updateProductQuantity(productId, newQuantity);
+    }
 
     // Create new order with the same ID as the cart
     const newOrder = new this.orderModel({
@@ -154,16 +201,16 @@ export class OrderService {
     // Calculate days left for rental orders
     let daysLeft = null;
     if (orderObj.items.some(item => item.type === 'Rent') && orderObj.startDate && orderObj.endDate) {
-        const currentDate = new Date(orderObj.startDate);
-        const endDate = new Date(orderObj.endDate);
-        const timeDiff = endDate.getTime() - currentDate.getTime();
-        daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert milliseconds to days
+      const currentDate = new Date(orderObj.startDate);
+      const endDate = new Date(orderObj.endDate);
+      const timeDiff = endDate.getTime() - currentDate.getTime();
+      daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24)); // Convert milliseconds to days
     }
 
     return {
-        ...orderObj,
-        remainingAmount,
-        daysLeft
+      ...orderObj,
+      remainingAmount,
+      daysLeft
     };
   }
 

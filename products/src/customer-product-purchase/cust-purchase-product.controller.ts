@@ -1,13 +1,30 @@
-import { Controller, Delete, Post, Param, Body, Put, NotFoundException } from '@nestjs/common';
+import { Controller, Delete, Post, Param, Body, Put, NotFoundException, OnModuleInit, Inject } from '@nestjs/common';
 import { CustPurchaseProductService } from './cust-purchase-product.service';
 import { CreateCustPurchaseProductDto } from './dto/create-cust-purchase-product.dto';
 import { UpdateCustPurchaseProductDto } from './dto/update-cust-purchase-product.dto';
-import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('customer-purchase-products')
-export class CustPurchaseProductController {
+export class CustPurchaseProductController implements OnModuleInit {
+  @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka 
   constructor(private readonly custPurchaseProductService: CustPurchaseProductService) {}
 
+  async onModuleInit() {
+    this.kafkaClient.subscribeToResponseOf('update.product.quantity');
+    await this.kafkaClient.connect();
+  }
+
+  @MessagePattern('update.product.quantity')
+  async handleUpdateProductQuantity(@Payload() data: { productId: string; quantity: number }) {
+    const { productId, quantity } = data;
+    try {
+      console.log(`Received request to update quantity for product ID: ${productId} to ${quantity}`);
+      await this.custPurchaseProductService.updateProductQuantity(productId, quantity);
+    } catch (error) {
+      console.error(`Error handling product quantity update request: ${error.message}`);
+      throw error;
+    }
+  }
   @Post()
   async createProduct(@Body() createCustPurchaseProductDto: CreateCustPurchaseProductDto): Promise<any> {
     try {
@@ -129,5 +146,23 @@ export class CustPurchaseProductController {
       throw error;
     }
   }
+  @MessagePattern('get.product.quaa')
+  async handleProductquaRequest(@Payload() message) {
+    try {
+      const { productId } = message;
+      if (!productId) {
+        throw new Error('Invalid message format: productId is missing');
+      }
 
+      const productDetails = await this.custPurchaseProductService.getProductDetails(productId);
+      if (!productDetails) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
+      return { quantity: productDetails.quantity };
+    } catch (error) {
+      console.error('Error handling product material request:', error.message);
+      throw error;
+    }
+  }
 }

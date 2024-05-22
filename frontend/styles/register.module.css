@@ -1,0 +1,95 @@
+/* register.module.css */
+.background {
+  background-image: url('/assets/background.jpeg');
+  background-size: cover;
+  background-position: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; 
+}
+
+.container {
+  width: 80%; /* Set container width to 80% of the parent element */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #fff; /* Text color for better contrast with background */
+  background-size: cover;
+  background-position: center;
+  height: 100vh; /* Ensure full viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: scale(1.1);
+
+  
+}
+
+.logo {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: none; /* Remove default border */
+  border-bottom: 1px solid #cccccc; /* Add bottom border */
+  border-radius: 0px;
+  background-color: rgba(10, 87, 155, 0); /* Transparent background */
+  font-size: 1em;
+}
+
+.input:focus {
+  outline: none; /* Remove focus outline */
+  border-color: #007bff; /* Change border color on focus */
+}
+
+
+.registerButton {
+  width: 100%; /* Set button width to fill its container */
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ff4800;
+  color: #ffffff;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.toggleButton {
+  width: 100%; /* Set button width to fill its container */
+  padding: 8px;
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  font-size: 1em;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.bottomContent {
+  margin-top: 30px;
+}
+
+.descriptionHeading {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 1em;
+  line-height: 1.5;
+}

@@ -1,0 +1,218 @@
+/* styles/Home.module.css */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Use min-height instead of height to ensure the container expands with content */
+    padding-bottom: 20vh; /* Add padding to the bottom equal to the height of the footer */
+    background-color: #ede3d6;
+}
+
+/* styles/Home.module.css */
+
+.pageWrapper {
+    overflow: hidden;
+    height: 100vh;
+  }
+  
+
+/* styles/Home.module.css */
+.card1 {
+    display: flex; /* Make it a flex container */
+    flex-direction: row-reverse; /* Reverse the order of items to place the image on the right */
+    width: 40.6vw; /* (576.9px / 1920px) * 100 */
+    height: 39.1vh; /* (317px / 1080px) * 100 */
+    flex-grow: 0;
+    border-radius: 1.76vw; /* 20.1px / 1920px * 100 */
+    box-shadow: 0 0.37vh 0.37vh 0 rgba(0, 0, 0, 0.25); /* 4px / 1080px * 100, 4px / 1080px * 100 */
+    background-color: #d9d9d9;
+}
+
+.card1 img {
+
+    width: 50%; /* (264.6px / 1920px) * 100 */
+    height: 100%; /* (414.4px / 1080px) * 100 */
+    flex-grow: 0;
+
+   
+    mix-blend-mode: darken;
+}
+
+
+.card2 {
+    display: flex; /* Make it a flex container */
+    flex-direction: row-reverse; /* Reverse the order of items to place the image on the right */
+    width: 30.6vw; /* (576.9px / 1920px) * 100 */
+    height: 39.1vh; /* (317px / 1080px) * 100 */
+    flex-grow: 0;
+    transform: translateX(5%);
+    border-radius: 1.76vw; /* 20.1px / 1920px * 100 */
+    box-shadow: 0 0.37vh 0.37vh 0 rgba(0, 0, 0, 0.25); /* 4px / 1080px * 100, 4px / 1080px * 100 */
+    background-color: #d9d9d9;
+}
+
+
+.card2 img {
+    transform: translateY(8%);
+    width: 70%; /* (264.6px / 1920px) * 100 */
+    height: 90%; /* (414.4px / 1080px) * 100 */
+    flex-grow: 0;
+    mix-blend-mode: darken;
+
+}
+
+
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.button1 {
+    
+    width: 10.7vw; 
+    height: 7.2vh;  
+    flex-grow: 0;
+    transform: translateY(240%);
+    font-size: 2.4vw; /* 47.4px / 1920px * 100 */
+    font-weight: bold;
+   
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: black; /* Set font color to black */
+    background-color: #8280809e; /* Grey background color */
+    border-radius: 1vw; /* Border radius */
+    border: none; /* Remove border */
+    cursor: pointer;
+
+}
+
+.button2 {
+    width: 8.7vw; /* (206.5px / 1920px) * 100 */
+    height: 7.2vh; /* (56.7px / 1080px) * 100 */
+    flex-grow: 0;
+    transform: translateX(50%);
+
+    font-size: 1.8vw; /* 47.4px / 1920px * 100 */
+    font-weight: bold;
+   
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: black; /* Set font color to black */
+    background-color: #ff6f00; /* Grey background color */
+    border-radius: 1vw; /* Border radius */
+    border: none; /* Remove border */
+    cursor: pointer;
+
+}
+
+.button3 {
+    width: 8.7vw; /* (206.5px / 1920px) * 100 */
+    height: 7.2vh; /* (56.7px / 1080px) * 100 */
+    flex-grow: 0;
+    transform: translateY(-118%);
+    font-size: 1.8vw; /* 47.4px / 1920px * 100 */
+    font-weight: bold;
+   
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: black; /* Set font color to black */
+    background-color: #8280809e; /* Grey background color */
+    border-radius: 1vw; /* Border radius */
+    border: none; /* Remove border */
+    cursor: pointer;
+
+}
+
+.button4 {
+    width: 10.7vw; /* (206.5px / 1920px) * 100 */
+    height: 7.2vh; /* (56.7px / 1080px) * 100 */
+    flex-grow: 0;
+    transform: translateY(-100%);
+
+    font-size: 2.4vw; /* 47.4px / 1920px * 100 */
+    font-weight: bold;
+   
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: black; /* Set font color to black */
+    background-color: #ff6f00; /* Grey background color */
+    border-radius: 1vw; /* Border radius */
+    border: none; /* Remove border */
+    cursor: pointer;
+}
+
+.button5{
+    width: 8.7vw; /* (206.5px / 1920px) * 100 */
+    height: 7.2vh; /* (56.7px / 1080px) * 100 */
+    flex-grow: 0;
+    transform: translateY(120%);
+    font-size: 1.8vw; /* 47.4px / 1920px * 100 */
+    font-weight: bold;
+   
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: black; /* Set font color to black */
+    background-color: #8280809e; /* Grey background color */
+    border-radius: 1vw; /* Border radius */
+    border: none; /* Remove border */
+    
+
+}
+
+.ReadyMade {
+    width: 12vw; /* (230.6px / 1920px) * 100 */
+    height: 6.3vh; /* (68.2px / 1080px) * 100 */
+    
+    font-size: 2.3vw; /* (24.8px / 1920px) * 100 */
+    
+    font-weight:300;
+   
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+ 
+    text-align: center;
+    color: #f2522e; /* Orange color */
+}
+
+.customize{
+    width: 5vw; /* (230.6px / 1920px) * 100 */
+    height: 3vh; /* (68.2px / 1080px) * 100 */
+    
+    font-size: 2vw; /* (24.8px / 1920px) * 100 */
+    font-weight:300;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+   
+    transform: translateX(130%);
+ 
+    
+    color: #f2522e; 
+
+}
+
+/* styles/Home.module.css */
+
+.footer {
+    height: 10vh; /* Adjust the height of the footer as needed */
+    padding: 20px; /* Add padding to create space between content and footer */
+    background-color: #011526;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    font-size: medium;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #f2522e;
+  }
+  

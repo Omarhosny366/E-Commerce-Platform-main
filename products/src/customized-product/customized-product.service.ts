@@ -42,7 +42,8 @@ export class CustomizedProductService {
       ...createCustomizedProductDto,
       price: finalPrice,
       userId: userId,
-      type: "customized"
+      type: "customized",
+      name:"customized Product"
     };
 
     return this.customizedProductRepository.create(customizedProduct);

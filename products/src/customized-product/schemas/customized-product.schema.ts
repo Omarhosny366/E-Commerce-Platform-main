@@ -7,7 +7,11 @@ export type CustomizedProductDocument = CustomizedProduct & Document;
 export class CustomizedProduct {
     @Prop({ required: true, default: 'customized' })
     type: string; 
+
     
+  @Prop({ required: true ,default: 'customized Product' })
+  name: string;
+
   @Prop({ required: false })
   dimensions?: string;
 

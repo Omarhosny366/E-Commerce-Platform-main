@@ -87,6 +87,7 @@ export class UserService {
     return { message: 'Password reset successfully' };
   }
 
+  
     async getUserById(): Promise<User> {
       const userId = this.userSingleton.getCurrentUser()?._id; 
     

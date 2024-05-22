@@ -9,4 +9,6 @@ export class UpdateCustomizedProductDto {
     readonly customizing_status?: string;
     // readonly seller_user_id?: string;
     readonly review?: number;
+    readonly name?: string;
+
 }

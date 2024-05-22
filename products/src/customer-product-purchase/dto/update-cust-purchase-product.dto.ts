@@ -1,5 +1,6 @@
 export class UpdateCustPurchaseProductDto {
     readonly type?: string;
+    readonly name?: string;
     readonly dimensions?: string;
     readonly color?: string;
     readonly material?: string;

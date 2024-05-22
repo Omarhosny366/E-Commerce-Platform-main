@@ -50,4 +50,19 @@ export class CustPurchaseProductService {
     async save(product: CustPurchaseProduct): Promise<CustPurchaseProduct> {
         return this.custPurchaseProductRepository.save(product);
     }
+    async updateProductQuantity(productId: string, quantity: number): Promise<void> {
+        try {
+          const product = await this.custPurchaseProductRepository.findById(productId);
+          if (!product) {
+            throw new NotFoundException(`Product with id ${productId} not found`);
+          }
+    
+          product.quantity = quantity;
+          await this.custPurchaseProductRepository.save(product);
+          console.log(`Updated product quantity for ID: ${productId} to ${quantity}`);
+        } catch (error) {
+          console.error(`Error updating product quantity for ID: ${productId}`, error);
+          throw new Error('Failed to update product quantity');
+        }
+      }
 }

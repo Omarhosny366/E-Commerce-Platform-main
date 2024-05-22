@@ -6,6 +6,9 @@ export type CustPurchaseProductDocument = CustPurchaseProduct & Document;
 @Schema()
 export class CustPurchaseProduct {
     @Prop()
+    name : string;
+    
+    @Prop()
     type: string;
 
     @Prop()

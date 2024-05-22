@@ -6,6 +6,9 @@ export type CustRentProductDocument = CustRentProduct & Document;
 @Schema()
 export class CustRentProduct {
     @Prop()
+    name: string;
+    
+    @Prop()
     type: string;
 
     @Prop()

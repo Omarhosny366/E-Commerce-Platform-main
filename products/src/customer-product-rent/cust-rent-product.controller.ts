@@ -133,4 +133,24 @@ export class CustRentProductController {
       throw error;
     }
   }
+  @MessagePattern('get.product.qua')
+  async handleProductQuanRequest(@Payload() message) {
+    try {
+      const { productId } = message;
+      if (!productId) {
+        throw new Error('Invalid message format: productId is missing');
+      }
+
+      const productDetails = await this.custRentProductService.getProductDetails(productId);
+      if (!productDetails) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
+      return { quantity: productDetails.quantity };
+    } catch (error) {
+      console.error('Error handling product material request:', error.message);
+      throw error;
+    }
+  }
+
 }
