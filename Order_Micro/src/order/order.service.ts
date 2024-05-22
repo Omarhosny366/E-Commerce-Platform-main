@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order, OrderDocument } from './schema/order.schema';
@@ -33,9 +33,21 @@ export class OrderService {
     await this.kafkaClient.connect();
   }
 
+  private async isGuestUser() {
+    let userSingleton = UserSingleton.getInstance();
+    let currentUser = userSingleton.getCurrentUser();
+    if (!currentUser) {
+      throw new Error('User not logged in');
+    }
+    let role= currentUser.role;
+    if(role=="guest"){
+        throw new Error('you have to login first 3shan tetlob');   
+    }
+    }
+
   private getCurrentUserId(): string {
-    const userSingleton = UserSingleton.getInstance();
-    const currentUser = userSingleton.getCurrentUser();
+    let userSingleton = UserSingleton.getInstance();
+    let currentUser = userSingleton.getCurrentUser();
     if (!currentUser) {
       throw new Error('User not logged in');
     }
@@ -43,8 +55,8 @@ export class OrderService {
   }
 
   private getCurrentUserEmail(): string {
-    const userSingleton = UserSingleton.getInstance();
-    const currentUser = userSingleton.getCurrentUser();
+    let userSingleton = UserSingleton.getInstance();
+    let currentUser = userSingleton.getCurrentUser();
     if (!currentUser) {
       throw new Error('User not logged in');
     }
@@ -64,8 +76,10 @@ export class OrderService {
   }
 
   async placeOrder(addressId: string): Promise<OrderDocument> {
-    const userId = this.getCurrentUserId();
-    const email = this.getCurrentUserEmail();
+    await this.isGuestUser(); // Correctly call and wait for the guest check
+    
+    let userId = this.getCurrentUserId();
+    let email = this.getCurrentUserEmail();
     const address = await this.getAddressDetails(addressId);
     const cart = await this.cartService.getCartByUserId(userId);
 

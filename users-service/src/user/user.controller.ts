@@ -6,10 +6,12 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Put,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,10 +26,22 @@ import { VerifyAccountDto } from './dto/verify-account.dto';
 import { UpdatePasswordDto } from './dto/update-pass.dto';
 import { ResetPassDto } from './dto/resetPass-user.dto';
 import { MessagePattern } from '@nestjs/microservices';
+import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+  @Post('guest')
+  async createGuestUser() {
+    return await this.userService.createGuestUser();
+  }
 
+  @Post('guest/complete')
+  async completeGuestRegistration(
+    @Body() createUserDto: CreateUserDto
+  ) {
+    return await this.userService.completeGuestRegistration(createUserDto);
+  }
+  
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() createUserDto: CreateUserDto) {
@@ -45,6 +59,7 @@ export class UserController {
   }
 
   @Put('update')
+  @UseInterceptors(FileInterceptor('file')) // This captures the file from the form data
   async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<User> {
     try {
       return await this.userService.updateUserDetails(updateUserDto);

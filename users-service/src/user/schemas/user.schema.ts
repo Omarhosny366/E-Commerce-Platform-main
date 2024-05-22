@@ -39,6 +39,9 @@ export class User extends Document {
 
   @Prop()
   paymentCard_ID: string[];
+
+  @Prop()
+  profileImage: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

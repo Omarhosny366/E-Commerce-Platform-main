@@ -149,7 +149,7 @@ export class UserService {
     const user = await this.userModel.findById(userId);
 
 
-    user.username = updateUserDto.username || user.username; // Update user's name from DTO
+    user.username = updateUserDto.username || user.username; 
     user.email = updateUserDto.email || user.email;
     user.PhoneNumber = updateUserDto.PhoneNumber || user.PhoneNumber;
 
@@ -318,5 +318,50 @@ export class UserService {
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     await this.userModel.findByIdAndUpdate(userId, { password: hashedNewPassword });
+  }
+
+
+
+  async createGuestUser(): Promise<User> {
+    const guestEmail = `guest_${Date.now()}@example.com`;
+    const newUser = new this.userModel({
+      email: guestEmail,
+      password: 'Guest', // No password for guest users
+      username: 'Guest',
+      role: 'guest',
+      
+    });
+    const user = await newUser.save();
+
+    this.userSingleton.setCurrentUser(user);
+
+    this.kafkaClient.emit('user.logged.in', JSON.stringify(user));
+
+    return user;
+
+  }
+  async completeGuestRegistration(createUserDto: CreateUserDto): Promise<User> {
+    const userId = this.userSingleton.getCurrentUser()?._id; // Get user ID from UserSingleton
+
+    const user = await this.userModel.findById(userId);
+    if (!user || user.role !== 'guest') {
+      throw new NotFoundException('Guest user not found');
+    }
+
+    user.email = createUserDto.email;
+    user.password = await bcrypt.hash(createUserDto.password, 10);
+    user.username = createUserDto.username;
+    user.role = 'user';
+    user.PhoneNumber = createUserDto.PhoneNumber;
+    user.OTP = this.generateOTP();
+
+    await this.isEmailUnique(createUserDto.email);
+    await this.sendVerificationEmail(createUserDto.email, user.OTP);
+
+    const updatedUser = await user.save();
+
+    this.userSingleton.setCurrentUser(updatedUser);
+
+    return updatedUser;
   }
 }
