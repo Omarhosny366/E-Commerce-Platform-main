@@ -1,0 +1,138 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navbar {
+  background-color: #011526;
+  color: #F2522E;
+  padding: 10px;
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  width: 180px;
+  height: 60px;
+}
+
+.navIcons {
+  display: flex;
+  gap: 10px;
+}
+
+.icon {
+  margin-inline: 10px;
+  cursor: pointer;
+}
+
+/* Main content styling */
+.mainContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  flex: 1;
+}
+
+.leftSidebar {
+  width: 25%;
+}
+
+.property {
+  margin-bottom: 20px;
+  background-color: #011526;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+}
+
+.propertyLabel {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.dropdown {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.propertyPrice {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #888;
+}
+
+.middleContent {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.productBox {
+  width: 300px;
+  height: 300px;
+  border: 4px solid orange;
+}
+
+.rightSidebar {
+  width: 25%;
+}
+
+.selectedChoices {
+  background-color: rgba(255, 165, 0, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.selectedProperty {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.selectedPropertyName {
+  font-weight: bold;
+}
+
+.selectedPropertyValue {
+  margin-left: 5px;
+}
+
+.cancelButton {
+  margin-left: auto;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: red;
+}
+
+.totalPrice {
+  background-color: rgba(255, 165, 0, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.addToCartButton {
+  padding: 10px 20px;
+  background-color: #f2522e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.addToCartButton:hover {
+  background-color: #d13d0a;
+}
+

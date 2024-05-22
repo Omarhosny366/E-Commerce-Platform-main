@@ -1,0 +1,123 @@
+/* profile.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .navbar {
+    background-color: #011526;
+    color: #F2522E;
+    padding: 10px;
+  }
+  
+  .logoContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 180px;
+    height: 60px;
+    font-size: 50px;
+    display: block;
+    margin: auto;
+  }
+  
+  .navIcons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .icon {
+    width: 30px; /* Adjust icon size */
+    height: 30px; /* Adjust icon size */
+    cursor: pointer;
+  }
+  
+  .profileContent {
+    display: flex;
+    flex: 1;
+  }
+  
+  .sidebar {
+    background-color: #011526;
+    color: #F2522E;
+    width: 200px;
+    padding: 20px;
+  }
+  
+  .sidebarBox {
+    margin-bottom: 20px;
+  }
+  
+  .sidebarButton {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #011526;
+    color: #f2522e;
+    border: 2px solid #f2522e;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .sidebarButton:hover {
+    background-color: #f2522e;
+    color: #007bff;
+  }
+  
+  .profileInfo {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .profileHeader {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profilePhoto {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin-right: 20px;
+    border: 4px solid #f2522e;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .userInfo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .userInfoBox {
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .userInfoBox p {
+    font-weight: bold;
+  }
+  
+  .userInfoBox input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: none;
+    background-color: rgba(255, 165, 0, 0.2);
+    border-radius: 10px;
+  }
+  
+  .userInfoBox label {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background-color: #011526;
+    padding: 0 5px;
+    font-size: 14px;
+  }
+  

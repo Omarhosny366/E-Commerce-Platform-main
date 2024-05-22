@@ -1,0 +1,61 @@
+.container {
+    padding: 20px;
+  }
+  
+  .title {
+    text-align:left;
+    margin-bottom: 20px;
+  }
+  
+  .cartTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .cartTable th,
+  .cartTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .cartTable th {
+    background-color: #f2522e;
+    color: white;
+  }
+  
+  .quantityInput {
+    width: 50px;
+    text-align: center;
+  }
+  
+  .removeButton {
+    background-color: #f2522e;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .removeButton:hover {
+    background-color: #f2522e;
+  }
+  
+  .totalContainer {
+    text-align: right;
+    margin-top: 20px;
+  }
+  
+  .checkoutButton {
+    padding: 10px 20px;
+    background-color: #f2522e;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .checkoutButton:hover {
+    background-color: #f2522e;
+  }
+  

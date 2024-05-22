@@ -1,0 +1,31 @@
+/* styles/Navbar.module.css */
+.navbar {
+    background-color: #011526;
+    color: #f2522e;
+    padding: 10px;
+  }
+  
+  .logoContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 180px;
+    height: 60px;
+    font-size: 50px;
+    display: block;
+    margin: auto;
+  }
+  
+  .navIcons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .icon {
+    margin-inline: 10px;
+    cursor: pointer;
+  }
+  
