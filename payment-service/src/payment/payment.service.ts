@@ -11,7 +11,7 @@ const PAYMOB_URL = "https://accept.paymob.com/api";
 export class PaymentService {
   async pay(paymentRequestDTO: PaymentRequestDTO): Promise<string | undefined> {
     try {
-      const { order_cart, billing_data, amount_cents, delivery_needed } = paymentRequestDTO;
+      const { order_cart, billing_data, amount_cents, delivery_needed, customer } = paymentRequestDTO;
 
       // Authentication Request -- step 1 in the docs
       const accessToken = await authenticate();
@@ -44,7 +44,9 @@ export class PaymentService {
         expiration: 3600,
         order_id: orderId,
         billing_data,
+        customer,
         currency: "EGP",
+        
         integration_id: 4580362, // Replace with your integration id
       };
       const paymentKeyResponse: AxiosResponse<PaymentKeyResponseDTO> = await axios.post(paymentKeyUrl, paymentKeyData, { headers });
@@ -54,8 +56,8 @@ export class PaymentService {
       const iframeUrl = `https://accept.paymob.com/api/acceptance/iframes/847842?payment_token=${paymentToken}`;
       
       // Add the billing data
+      console.log("Payment URL:", iframeUrl);
       console.log("Billing data:", billing_data);
-
       return iframeUrl;
     } catch (error) {
       if (axios.isAxiosError(error)) {
