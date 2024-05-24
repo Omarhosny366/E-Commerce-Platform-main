@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router'; // Import useRouter for navigation
+import Navbar from '../components/Navbar'; // Import Navbar component
 import styles from '../../styles/profile.module.css'; // Import CSS module
 
 const Profile = () => {
-  // State to store user data
+  const router = useRouter(); // Initialize useRouter
   const [userData, setUserData] = useState({
     name: '',
     email: '',
     username: '',
-    password: '',
     profilePhoto: '',
   });
 
@@ -21,7 +22,6 @@ const Profile = () => {
 
   // Handler for editing profile photo
   const handleEditPhoto = () => {
-    // Simulate click on the hidden file input
     document.getElementById('fileInput').click();
   };
 
@@ -31,7 +31,6 @@ const Profile = () => {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      // Update profile photo in state
       setUserData({
         ...userData,
         profilePhoto: reader.result,
@@ -62,34 +61,27 @@ const Profile = () => {
 
   // Handler for editing payment info
   const handleEditPayment = () => {
-    // Implement edit payment functionality
     console.log('Edit payment button clicked');
+  };
+
+  // Handler for navigating to the change password page
+  const handleChangePassword = () => {
+    router.push('/changepass'); // Navigate to change password page
   };
 
   return (
     <div className={styles.container}>
-      {/* Navbar */}
-      <div className={styles.navbar}>
-        <div className={styles.logoContainer}>
-          {/* Seelaz Logo */}
-          <img src="/seelaz_logo.png" alt="Seelaz" className={styles.logo} />
-          {/* Navigation Icons */}
-          <div className={styles.navIcons}>
-            {/* Home Icon */}
-            <img src="/home_icon.png" alt="Home" className={styles.icon} />
-            {/* Favorites Icon */}
-            <img src="/heart_icon.png" alt="Favorites" className={styles.icon} />
-            {/* Cart Icon */}
-            <img src="/cart_icon.png" alt="Cart" className={styles.icon} />
-          </div>
-        </div>
-      </div>
+      {/* Include Navbar component */}
+      <Navbar />
 
       {/* Profile Content */}
       <div className={styles.profileContent}>
         {/* Sidebar */}
         <div className={styles.sidebar}>
           <div className={styles.sidebarBox}>
+            {/* Add button to navigate to Change Password page */}
+            <button className={styles.sidebarButton} onClick={handleChangePassword}>Change Password</button>
+
             <button className={styles.sidebarButton} onClick={handleEditPhoto}>Edit Photo</button>
             <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handlePhotoChange} />
             {isEditing ? (

@@ -1,0 +1,66 @@
+.container {
+  max-width: 600px; /* Adjusted for a more compact layout */
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #011526; /* Blue transparent background */
+  border-radius: 20px;
+  box-shadow: 0 4px 8px #011526;
+  text-align: center; /* Center align text */
+}
+
+.title {
+  color: #f2522e;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align form elements */
+  gap: 20px;
+}
+
+.inputRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Added gap between columns */
+  width: 100%; /* Ensure the input row takes the full width of the container */
+}
+
+.labelWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align labels and inputs to the start */
+  width: calc(50% - 10px); /* Adjust the width to fit two columns */
+}
+
+.label {
+  font-weight: bold;
+  color: #ffffff; /* Brighter text color */
+  margin-bottom: 8px; /* Space between label and input */
+}
+
+.inputField {
+  width: 100%; /* Full width of the label wrapper */
+  padding: 8px;
+  border-radius: 20px;
+  border: 1px solid #f2522e;
+  background-color: rgba(0, 0, 0, 0.05);
+  font-weight: bold;
+  color: #f8f8f8;
+}
+
+.button {
+  background-color: #f2522e;
+  color: #ffffff; /* Brighter text color */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin-bottom: 20px;
+}

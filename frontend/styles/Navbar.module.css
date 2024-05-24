@@ -1,31 +1,42 @@
 /* styles/Navbar.module.css */
+
 .navbar {
-    background-color: #011526;
-    color: #f2522e;
-    padding: 10px;
-  }
-  
-  .logoContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    width: 180px;
-    height: 60px;
-    font-size: 50px;
-    display: block;
-    margin: auto;
-  }
-  
-  .navIcons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .icon {
-    margin-inline: 10px;
-    cursor: pointer;
-  }
-  
+  background-color: #011526;
+  color: #f2522e;
+  padding: 10px;
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  width: 180px;
+  height: 60px;
+  font-size: 50px;
+  display: block;
+  margin: auto;
+}
+
+.navIcons {
+  display: flex;
+  gap: 10px;
+}
+
+.toggleButton img {
+  width: 30px; /* Adjust the width of the images */
+  height: 30px; /* Adjust the height of the images */
+}
+
+.toggleButton {
+  padding: 5px; /* Adjust padding to create space around the images */
+  background-color: #011526;
+  border: none; /* Remove border if present */
+  cursor: pointer;
+}
+
+.icon {
+  margin-inline: 10px;
+}
