@@ -11,7 +11,7 @@ const PAYMOB_URL = "https://accept.paymob.com/api";
 export class PaymentService {
   async pay(paymentRequestDTO: PaymentRequestDTO): Promise<string | undefined> {
     try {
-      const { order_cart, billing_data, amount_cents, delivery_needed, customer } = paymentRequestDTO;
+      const { order_cart, billing_data, amount_cents, delivery_needed } = paymentRequestDTO;
 
       // Authentication Request -- step 1 in the docs
       const accessToken = await authenticate();
@@ -44,8 +44,8 @@ export class PaymentService {
         expiration: 3600,
         order_id: orderId,
         billing_data,
-        customer,
         currency: "EGP",
+        lock_order_when_paid: "false",
         
         integration_id: 4580362, // Replace with your integration id
       };
@@ -92,4 +92,54 @@ export class PaymentService {
         throw error;
     }
   }
+
+  async getOrderStatusByTransactionId(transactionId: string): Promise<OrderResponseDTO | undefined> {
+    try {
+        // Authenticate -- Step 1
+        const accessToken = await authenticate();
+        const url = `${PAYMOB_URL}/acceptance/transactions/${transactionId}/order`;
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        };
+        const response: AxiosResponse<OrderResponseDTO> = await axios.get(url, { headers });
+        return response.data;
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error("Error in getOrderStatusByTransactionId function:", error.response?.data);
+        } else {
+            console.error("Unexpected error:", error);
+        }
+
+        // Rethrow the error for the caller to handle
+        throw error;
+    }
+  }
+
+  async getOrderStatusByOrderId(orderId: string): Promise<OrderResponseDTO | undefined> {
+    try {
+        // Authenticate -- Step 1
+        const accessToken = await authenticate();
+        const url = `${PAYMOB_URL}/ecommerce/orders/${orderId}`;
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        };
+        const response: AxiosResponse<OrderResponseDTO> = await axios.get(url, { headers });
+        return response.data;
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error("Error in getOrderStatusByOrderId function:", error.response?.data);
+        } else {
+            console.error("Unexpected error:", error);
+        }
+
+        // Rethrow the error for the caller to handle
+        throw error;
+    }
+  }
+
+
 }
