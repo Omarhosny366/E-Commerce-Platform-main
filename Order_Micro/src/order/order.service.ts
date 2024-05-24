@@ -105,15 +105,15 @@ export class OrderService {
     }
   }
 
-  async updateProductQuantity(productId: string, quantity: number): Promise<void> {
-    try {
-      await this.kafkaClient.send('update.product.quantity', { productId, quantity }).toPromise();
-      console.log(`Updated product quantity for ID: ${productId} to ${quantity}`);
-    } catch (error) {
-      console.error(`Error updating product quantity for ID: ${productId}`, error);
-      throw new Error('Failed to update product quantity');
-    }
-}
+//   async updateProductQuantity(productId: string, quantity: number): Promise<void> {
+//     try {
+//       await this.kafkaClient.send('update.product.quantity', { productId, quantity }).toPromise();
+//       console.log(`Updated product quantity for ID: ${productId} to ${quantity}`);
+//     } catch (error) {
+//       console.error(`Error updating product quantity for ID: ${productId}`, error);
+//       throw new Error('Failed to update product quantity');
+//     }
+// }
 
   async placeOrder(addressId: string): Promise<OrderDocument> {
     await this.isGuestUser(); // Correctly call and wait for the guest check
@@ -121,7 +121,7 @@ export class OrderService {
     const userId = this.getCurrentUserId();
     const email = this.getCurrentUserEmail();
     const address = await this.getAddressDetails(addressId);
-    const cart = await this.cartService.getCartByUserId(userId);
+    const cart = await this.cartService.getCartByUserId();
 
     const startDate = cart.startDate;
     const endDate = cart.endDate;
@@ -131,7 +131,7 @@ export class OrderService {
         const productId = item.product_id.toString();
       const currentQuantity = await this.getProductQuantity(productId);
       const newQuantity = currentQuantity - item.quantity;
-      await this.updateProductQuantity(productId, newQuantity);
+      // await this.updateProductQuantity(productId, newQuantity);
     }
 
     // Create new order with the same ID as the cart
@@ -216,8 +216,9 @@ export class OrderService {
 
   async getMyOrders(): Promise<any[]> {
     const userId = this.getCurrentUserId();
-    const orders = await this.orderModel.find({ userId }).exec();
-    return orders.map(order => this.addRemainingAmount(order));
+    const orders = await this.orderModel.find({  userId, 
+     });
+    return orders;
   }
 
   async getMyRentOrders(): Promise<any[]> {
@@ -233,7 +234,7 @@ export class OrderService {
     const userId = this.getCurrentUserId();
     const purchaseOrders = await this.orderModel.find({
       userId,
-      'items.type': 'Purchase'
+      'items.type': 'purchase'
     }).exec();
     return purchaseOrders;
   }

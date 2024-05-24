@@ -1,41 +1,44 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import styles from '../../styles/profile.module.css'; // Import CSS module
+import Navbar from '../components/Navbar'; // Adjust the path if necessary
 
 const Profile = () => {
-  // State to store user data
   const [userData, setUserData] = useState({
     name: '',
     email: '',
     username: '',
     password: '',
     profilePhoto: '',
+    PhoneNumber: '',
   });
 
-  const [isEditing, setIsEditing] = useState(false); // State to track editing mode
+  const [isEditing, setIsEditing] = useState(false);
+  const [myOrders, setMyOrders] = useState([]);
+  const [myRents, setMyRents] = useState([]);
 
   useEffect(() => {
-    // Fetch user data from backend
-    // Example:
-    // fetchUserData().then(data => setUserData(data));
+    axios.get('http://localhost:3000/user/profile')
+      .then(response => {
+        setUserData(response.data);
+        toast.success("User data loaded successfully!");
+      })
+      .catch(error => {
+        toast.error("Failed to fetch user data: " + error.message);
+      });
   }, []);
 
-  // Handler for editing profile photo
   const handleEditPhoto = () => {
-    // Simulate click on the hidden file input
     document.getElementById('fileInput').click();
   };
 
-  // Handler for updating profile photo
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      // Update profile photo in state
-      setUserData({
-        ...userData,
-        profilePhoto: reader.result,
-      });
+      setUserData({ ...userData, profilePhoto: reader.result });
     };
 
     if (file) {
@@ -43,84 +46,76 @@ const Profile = () => {
     }
   };
 
-  // Handler for editing user info
   const handleEditInfo = () => {
-    setIsEditing(true); // Set editing mode to true
+    setIsEditing(true);
   };
 
-  // Handler for saving edited user info
-  const handleSaveInfo = () => {
-    setIsEditing(false); // Set editing mode to false
-    // Implement save info functionality
+  const handleSaveInfo = async () => {
+    setIsEditing(false);
+    try {
+      const response = await axios.put('http://localhost:3000/user/update', {
+        username: userData.username,
+        email: userData.email,
+        PhoneNumber: userData.PhoneNumber,
+      });
+      toast.success('Profile updated successfully!');
+      setUserData({...userData, ...response.data}); // Update local data with response
+    } catch (error) {
+      toast.error('Failed to update profile: ' + (error.response?.data?.message || error.message));
+    }
   };
 
-  // Handler for canceling editing user info
   const handleCancelEdit = () => {
-    setIsEditing(false); // Set editing mode to false
-    // Implement cancel edit functionality (e.g., revert changes)
+    setIsEditing(false);
+    // Optionally, revert changes
   };
 
-  // Handler for editing payment info
-  const handleEditPayment = () => {
-    // Implement edit payment functionality
-    console.log('Edit payment button clicked');
+  const handleEditPayment = (endpoint) => {
+    axios.get(`http://localhost:3001/orders/${endpoint}`)
+      .then(response => {
+        if (endpoint === 'my-orders') {
+          setMyOrders(response.data);
+        } else if (endpoint === 'my-rents') {
+          setMyRents(response.data);
+        }
+        toast.success(`Fetched ${endpoint.replace('-', ' ')} successfully!`);
+      })
+      .catch(error => {
+        toast.error(`Failed to fetch ${endpoint.replace('-', ' ')}: ${error.message}`);
+      });
   };
 
   return (
     <div className={styles.container}>
-      {/* Navbar */}
-      <div className={styles.navbar}>
-        <div className={styles.logoContainer}>
-          {/* Seelaz Logo */}
-          <img src="/seelaz_logo.png" alt="Seelaz" className={styles.logo} />
-          {/* Navigation Icons */}
-          <div className={styles.navIcons}>
-            {/* Home Icon */}
-            <img src="/home_icon.png" alt="Home" className={styles.icon} />
-            {/* Favorites Icon */}
-            <img src="/heart_icon.png" alt="Favorites" className={styles.icon} />
-            {/* Cart Icon */}
-            <img src="/cart_icon.png" alt="Cart" className={styles.icon} />
-          </div>
-        </div>
-      </div>
-
-      {/* Profile Content */}
+      <Navbar />
       <div className={styles.profileContent}>
-        {/* Sidebar */}
         <div className={styles.sidebar}>
           <div className={styles.sidebarBox}>
             <button className={styles.sidebarButton} onClick={handleEditPhoto}>Edit Photo</button>
             <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handlePhotoChange} />
             {isEditing ? (
               <>
-                {/* Save and Cancel buttons */}
                 <button className={styles.sidebarButton} onClick={handleSaveInfo}>Save</button>
                 <button className={styles.sidebarButton} onClick={handleCancelEdit}>Cancel</button>
               </>
             ) : (
-              // "Edit Info" button
               <button className={styles.sidebarButton} onClick={handleEditInfo}>Edit Info</button>
             )}
-            <button className={styles.sidebarButton} onClick={handleEditPayment}>Edit Payment</button>
+            <button className={styles.sidebarButton} onClick={() => handleEditPayment('my-orders')}>My Orders</button>
+            <button className={styles.sidebarButton} onClick={() => handleEditPayment('my-rents')}>My Rents</button>
           </div>
         </div>
-
-        {/* Profile Information */}
         <div className={styles.profileInfo}>
           <div className={styles.profileHeader}>
             <div className={styles.profilePhoto} style={{ backgroundImage: `url(${userData.profilePhoto})` }}></div>
-
             <div className={styles.userInfo}>
-              {/* Editable fields */}
               <div className={styles.userInfoBox}>
                 {isEditing ? (
                   <>
-                    <label htmlFor="name">Name:</label>
-                    <input type="text" id="name" value={userData.name} onChange={(e) => setUserData({ ...userData, name: e.target.value })} />
+                    <label htmlFor="name"></label>
                   </>
                 ) : (
-                  <p><strong>Name:</strong> {userData.name}</p>
+                  <p><strong></strong> {userData.name}</p>
                 )}
               </div>
               <div className={styles.userInfoBox}>
@@ -146,13 +141,90 @@ const Profile = () => {
               <div className={styles.userInfoBox}>
                 {isEditing ? (
                   <>
-                    <label htmlFor="password">Password:</label>
-                    <input type="password" id="password" value={userData.password} onChange={(e) => setUserData({ ...userData, password: e.target.value })} />
+                    <label htmlFor="phoneNumber">Phone Number:</label>
+                    <input type="text" id="phoneNumber" value={userData.PhoneNumber} onChange={(e) => setUserData({ ...userData, phoneNumber: e.target.value })} />
                   </>
                 ) : (
-                  <p><strong>Password:</strong> {userData.password}</p>
+                  <p><strong>Phone Number:</strong> {userData.PhoneNumber}</p>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+        {/* My Orders and My Rents Section */}
+        <div className={styles.ordersAndRentsContainer}>
+          <div className={styles.ordersAndRents}>
+            <div className={styles.myOrders}>
+              <h2>My Orders</h2>
+              {myOrders.map(order => (
+                <div key={order._id} className={styles.orderCard}>
+                  <p><strong>Status:</strong> {order.status}</p>
+                  <p><strong>Order ID:</strong> {order._id}</p>
+                  <p><strong>User ID:</strong> {order.userId}</p>
+                  <div>
+                    <p><strong>Address:</strong></p>
+                    <p>{order.address.buildingNumber}, {order.address.buildingType}</p>
+                    <p>{order.address.street}, {order.address.flatNumber}</p>
+                    <p>{order.address.city}, {order.address.floor}</p>
+                  </div>
+                  <div>
+                    <p><strong>Items:</strong></p>
+                    {order.items.map(item => (
+                      <div key={item._id}>
+                        <p>Quantity: {item.quantity}</p>
+                        <p>Price: ${item.price}</p>
+                        <p>Type: {item.type}</p>
+                        <p>Material: {item.material}</p>
+                        <p>Dimensions: {item.dimensions}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <p><strong>Total Amount:</strong> ${order.total}</p>
+                  <p><strong>Downpayment:</strong> ${order.downpayment}</p>
+                  <p><strong>Created At:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+                  <p><strong>Start Date:</strong> {new Date(order.startDate).toLocaleString()}</p>
+                  <p><strong>End Date:</strong> {new Date(order.endDate).toLocaleString()}</p>
+                  <p><strong>Remaining Amount:</strong> ${order.remainingAmount}</p>
+                  <p><strong>Days Left:</strong> {order.daysLeft}</p>
+                </div>
+              ))}
+            </div>
+            <div className={styles.myRents}>
+              <h2>My Rents</h2>
+              {myRents.map(rent => (
+                <div key={rent._id} className={styles.rentCard}>
+                  <div className={styles.rentCardBody}>
+                    <p><strong>Status:</strong> {rent.status}</p>
+                    <p><strong>Rent ID:</strong> {rent._id}</p>
+                    <p><strong>User ID:</strong> {rent.userId}</p>
+                    <div>
+                      <p><strong>Address:</strong></p>
+                      <p>{rent.address.buildingNumber}, {rent.address.buildingType}</p>
+                      <p>{rent.address.street}, {rent.address.flatNumber}</p>
+                      <p>{rent.address.city}, {rent.address.floor}</p>
+                    </div>
+                    <div>
+                      <p><strong>Items:</strong></p>
+                      {rent.items.map(item => (
+                        <div key={item._id}>
+                          <p>Quantity: {item.quantity}</p>
+                          <p>Price: ${item.price}</p>
+                          <p>Type: {item.type}</p>
+                          <p>Material: {item.material}</p>
+                          <p>Dimensions: {item.dimensions}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <p><strong>Total Amount:</strong> ${rent.total}</p>
+                    <p><strong>Downpayment:</strong> ${rent.downpayment}</p>
+                    <p><strong>Created At:</strong> {new Date(rent.createdAt).toLocaleString()}</p>
+                    <p><strong>Start Date:</strong> {new Date(rent.startDate).toLocaleString()}</p>
+                    <p><strong>End Date:</strong> {new Date(rent.endDate).toLocaleString()}</p>
+                    <p><strong>Remaining Amount:</strong> ${rent.remainingAmount}</p>
+                    <p><strong>Days Left:</strong> {rent.daysLeft}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

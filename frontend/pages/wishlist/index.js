@@ -26,8 +26,8 @@ const Products = () => {
   const handleCardClick = (product) => {
     if (product.type === "Rent") {
       router.push(`/Rent_itemPage?id=${product.productId}`);
-    } else if (product.type === "Purchase") {
-      router.push(`/purchase_itemPage?id=${product.productId}`);
+    } else if (product.type === "purchase") {
+      router.push(`/Purchase_itemPage?id=${product.productId}`);
     }
   };
 

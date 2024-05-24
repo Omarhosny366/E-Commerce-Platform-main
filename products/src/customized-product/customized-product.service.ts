@@ -9,6 +9,12 @@ import { UserSingleton } from './userSingleton';
 export class CustomizedProductService {
   constructor(private readonly customizedProductRepository: CustomizedProductRepository) {}
   
+  async getAllProducts(): Promise<CustomizedProduct[]> {
+    return this.customizedProductRepository.find({});
+}
+
+
+
   async updateProductQuantity(productId: string, quantity: number): Promise<void> {
     try {
       const product = await this.customizedProductRepository.findById(productId);
@@ -59,7 +65,9 @@ export class CustomizedProductService {
       price: finalPrice,
       userId: userId,
       type: "customized",
-      name:"customized Product"
+      name:"customized Product",
+      customizing_status:"Preparing",
+      downpayment:finalPrice*0.3
     };
 
     return this.customizedProductRepository.create(customizedProduct);

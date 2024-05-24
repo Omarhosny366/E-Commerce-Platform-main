@@ -44,6 +44,9 @@ export class AddToCartDto {
   @IsString()
   productId: string;
 
+  @IsString()
+  name: string;
+
   @IsNumber()
   quantity: number;
 
@@ -55,7 +58,5 @@ export class AddToCartDto {
   @IsDateString()
   endDate?: string;
 
-  @ValidateNested()
-  @Type(() => ProductDetailsDto)
-  productDetails: ProductDetailsDto;
+ 
 }

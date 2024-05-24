@@ -24,18 +24,18 @@ export class CustomizedProduct {
   @Prop({ required: true })
   price: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   quantity: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   downPayment: number;
 
-  @Prop({ required: true })
+  @Prop({ required: true ,default:"Preparing" })
   customizing_status: string;
 
  
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   review: number;
 }
 

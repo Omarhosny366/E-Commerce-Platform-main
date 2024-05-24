@@ -15,11 +15,13 @@ export class Cart extends Document {
       price: { type: Number, required: true },
       type: { type: String, required: false },
       material: { type: Object, required: false },
-      dimensions: { type: Object, required: false }
+      dimensions: { type: Object, required: false },
+      name: { type: String, required: false },
+
     }],
     default: []
   })
-  items: { product_id: Types.ObjectId; quantity: number; price: number; type: string; material: Object; dimensions: Object }[];
+  items: { product_id: Types.ObjectId; quantity: number; price: number; type: string; material: Object; dimensions: Object, downPayment:number,name:string }[];
 
   @Prop({ type: Number, default: 0 })
   totalPrice: number;

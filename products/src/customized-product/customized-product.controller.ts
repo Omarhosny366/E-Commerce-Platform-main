@@ -1,8 +1,9 @@
-import { Controller, Delete, Post, Param, Body, Put, NotFoundException, Inject } from '@nestjs/common';
+import { Controller, Delete, Post, Param, Body, Put, NotFoundException, Inject, Get } from '@nestjs/common';
 import { CustomizedProductService } from './customized-product.service';
 import { CreateCustomizedProductDto } from './dto/create-customized-product.dto';
 import { UpdateCustomizedProductDto } from './dto/update-customized-product.dto';
 import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { CustomizedProduct } from './schemas/customized-product.schema';
 import { UserSingleton } from './userSingleton';
 
 @Controller('customized-products')
@@ -10,6 +11,15 @@ export class CustomizedProductController {
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka 
   constructor(private readonly customizedProductService: CustomizedProductService) {}
 
+  @Get(':id')
+  async getProductDetails(@Param('id') id: string): Promise<CustomizedProduct> {
+    return this.customizedProductService.getProductDetails(id);
+  }
+
+  @Get()
+  async getAllProducts(): Promise<CustomizedProduct[]> {
+    return this.customizedProductService.getAllProducts();
+  }
   async onModuleInit() {
     this.kafkaClient.subscribeToResponseOf('update.product.quantity');
     await this.kafkaClient.connect();
@@ -179,6 +189,25 @@ async handleUserLoggedIn(@Payload() message: any) {
       return { quantity: productDetails.quantity };
     } catch (error) {
       console.error('Error handling product material request:', error.message);
+      throw error;
+    }
+  }
+  @MessagePattern('get.product.nameee')
+  async handleProductNameRequest(@Payload() message) {
+    try {
+      const { productId } = message;
+      if (!productId) {
+        throw new Error('Invalid message format: productId is missing');
+      }
+
+      const productDetails = await this.customizedProductService.getProductDetails(productId);
+      if (!productDetails) {
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      }
+
+      return { name: productDetails.name };
+    } catch (error) {
+      console.error('Error handling product name request:', error.message);
       throw error;
     }
   }

@@ -2,23 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
-import Footer from '../components/footerr'; // Ensure correct import
+import Footer from '../components/footerr'; // Corrected the import spelling
 import styles from '../../styles/purchase_ItemPage.module.css'; // Ensure correct path
+import style from '../../styles/custom.module.css'; // Ensure correct path
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ItemPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [item, setItem] = useState(null);
+  const [cartProductId, setCartProductId] = useState(null);
+  const [cartQuantity, setCartQuantity] = useState('');
 
   useEffect(() => {
     const fetchItem = async () => {
       if (!id) return;
-
       try {
         const response = await axios.get(`http://localhost:3002/customer-purchase-products/${id}`);
         setItem(response.data);
       } catch (error) {
         console.error('Error fetching item:', error);
+        toast.error('Error fetching item details.');
       }
     };
 
@@ -26,25 +31,46 @@ const ItemPage = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    console.log('Add to cart:', item);
-    // Implement add to cart functionality here
+    setCartProductId(item._id);
+  };
+
+  const handleCartSubmit = async () => {
+    if (!cartQuantity || isNaN(cartQuantity) || parseInt(cartQuantity) <= 0) {
+      toast.error('Please enter a valid quantity');
+      return;
+    }
+
+    const cartDetails = {
+      productId: cartProductId,
+      quantity: parseInt(cartQuantity),
+    };
+
+    try {
+      const response = await axios.patch('http://localhost:3001/cart', cartDetails);
+      if (response.status >= 200 && response.status < 300) {
+        toast.success('Product added to cart successfully!');
+        setCartProductId(null);
+        setCartQuantity('');
+      }
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+      toast.error('Failed to add product to cart. Please try again.');
+    }
   };
 
   const handleAddToFavorites = async () => {
     try {
       const response = await axios.post('http://localhost:3000/wishlist/add-products', {
-        ProductID: [item._id], // Sending product ID in the required format
+        ProductID: item._id, // Assuming array is not needed
       });
       if (response.status >= 200 && response.status < 300) {
-        console.log('Product added to favorites:', response.data);
-        alert('Product added to favorites!');
+        toast.success('Product added to favorites!');
       } else {
-        console.error('Failed to add product to favorites:', response.data);
-        alert('Failed to add product to favorites.');
+        toast.error('Failed to add product to favorites.');
       }
     } catch (error) {
       console.error('Error adding product to favorites:', error);
-      alert('Error adding product to favorites. Please try again.');
+      toast.error('Error adding product to favorites. Please try again.');
     }
   };
 
@@ -57,7 +83,7 @@ const ItemPage = () => {
         <img src="/placeholder.jpg" alt={item.name} className={styles.itemImage} />
         <div className={styles.itemDetails}>
           <h1 className={styles.itemName}>{item.name}</h1>
-          <p className={styles.itemPrice}><strong>${item.price}</strong></p>
+          <p className={styles.itemPrice}><strong>${item.price.toFixed(2)}</strong></p>
           <p className={styles.productMaterial}><strong>Material:</strong> {item.material}</p>
           <p className={styles.productColor}><strong>Color:</strong> {item.color}</p>
           <p className={styles.productDimensions}><strong>Dimensions:</strong> {item.dimensions}</p>
@@ -69,7 +95,27 @@ const ItemPage = () => {
           <button className={styles.cartButton} onClick={handleAddToCart}>Add to Cart</button>
         </div>
       </div>
+
+      {/* Add to Cart Modal */}
+      {cartProductId && (
+        <div className={style.cartModal}>
+          <div className={style.modalContent}>
+            <h2>Enter Quantity</h2>
+            <input
+              type="number"
+              value={cartQuantity}
+              onChange={(e) => setCartQuantity(e.target.value)}
+              min="1"
+              className={style.quantityInput}
+            />
+            <button className={style.submitButton} onClick={handleCartSubmit}>Submit</button>
+            <button className={style.cancelButton} onClick={() => setCartProductId(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
       <Footer />
+      <ToastContainer />
     </div>
   );
 };

@@ -124,15 +124,116 @@
 }
 
 .addToCartButton {
-  padding: 10px 20px;
-  background-color: #f2522e;
+
+  background-color: #27ae60;
   color: white;
+  height: 4.7dvh;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .addToCartButton:hover {
-  background-color: #d13d0a;
+  background-color: #11da65;
 }
 
+.productCard {
+  position: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 25%;
+  padding: 20px;
+  background-color: #a6a0a069;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+.productCard:hover {
+  transform: scale(1.05);
+}
+
+.productDetails {
+  margin-top: 10px;
+}
+
+.productActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.deleteButton {
+  background-color: #c0392b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background-color: #ff1900;
+}
+
+.cartModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.quantityInput {
+  width: 40px; /* Set the width to 40px */
+  padding: 8px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  margin: 10px;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.submitButton:hover {
+  background-color: #11da65;
+}
+
+.errorMessage {
+  background-color: #e74c3c;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.successMessage {
+  background-color: #27ae60;
+  color: #F2522E;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+}

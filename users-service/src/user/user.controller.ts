@@ -59,7 +59,6 @@ export class UserController {
   }
 
   @Put('update')
-  @UseInterceptors(FileInterceptor('file')) // This captures the file from the form data
   async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<User> {
     try {
       return await this.userService.updateUserDetails(updateUserDto);

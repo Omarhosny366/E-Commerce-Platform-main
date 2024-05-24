@@ -1,9 +1,36 @@
 /* profile.module.css */
 
+.ordersAndRentsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.ordersAndRents {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .container {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    background-color: #e1806b49;
+  }
+  .rentCard {
+    display: flex;
+
+    background-color: #f0f0f0; /* Grey background */
+    flex-direction: row;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+  }
+  
+  .rentCardBody {
+    padding: 10px;
   }
   
   .navbar {
@@ -109,15 +136,20 @@
     padding: 10px;
     border: none;
     background-color: rgba(255, 165, 0, 0.2);
+    color: rgb(255, 119, 0);
     border-radius: 10px;
+    
   }
   
   .userInfoBox label {
     position: absolute;
+    color: rgb(0, 0, 0);
+
     top: -10px;
     left: 10px;
-    background-color: #011526;
+    background-color: #ffffff;
     padding: 0 5px;
     font-size: 14px;
+    border-radius: 15px;
   }
   
