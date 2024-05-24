@@ -22,9 +22,4 @@ export class PaymentController {
   async getTransactionById(transactionId: string): Promise<PaymentKeyResponseDTO | undefined> {
     return this.paymentService.getTransactionById(transactionId);
   }
-
-  // @Get('get-order-status/:transactionId')
-  // async getOrderStatusByTransactionId(transactionId: string): Promise<OrderResponseDTO | undefined> {
-  //   return this.paymentService.getOrderStatusByTransactionId(transactionId);
-  // }
 }
