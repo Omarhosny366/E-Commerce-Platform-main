@@ -2,6 +2,7 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/YourCart_cus": "pages/YourCart_cus.js",
+  "/wishlist": "pages/wishlist.js",
+  "/changepass": "pages/changepass.js",
   "/profile": "pages/profile.js"
 }

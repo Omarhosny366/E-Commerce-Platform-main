@@ -1,0 +1,53 @@
+/* changepass.module.css */
+
+.container {
+    max-width: 400px;
+    margin: 50px auto 50px 340px;    padding: 20px;
+    background-color: #011526;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .title {
+    color: #f2522e;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .inputWrapper {
+    margin-bottom: 20px;
+  }
+  
+  .label {
+    font-weight: bold;
+    color: #f5efef;
+    margin-bottom: 8px;
+  }
+  
+  .inputField {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .button {
+    background-color: #f2522e;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background-color: #0056b3;
+  }
+  

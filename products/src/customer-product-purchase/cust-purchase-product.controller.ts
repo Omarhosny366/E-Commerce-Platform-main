@@ -6,26 +6,26 @@ import { ClientKafka, EventPattern, MessagePattern, Payload } from '@nestjs/micr
 import { CustPurchaseProduct } from './schemas/cust-purchase-product.schema';
 
 @Controller('customer-purchase-products')
-export class CustPurchaseProductController implements OnModuleInit {
+export class CustPurchaseProductController  {
   @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka 
   constructor(private readonly custPurchaseProductService: CustPurchaseProductService) {}
 
-  async onModuleInit() {
-    this.kafkaClient.subscribeToResponseOf('update.product.quantity');
-    await this.kafkaClient.connect();
-  }
+  // async onModuleInit() {
+  //   // this.kafkaClient.subscribeToResponseOf('update.product.quantity');
+  //   await this.kafkaClient.connect();
+  // }
 
-  @MessagePattern('update.product.quantity')
-  async handleUpdateProductQuantity(@Payload() data: { productId: string; quantity: number }) {
-    const { productId, quantity } = data;
-    try {
-      console.log(`Received request to update quantity for product ID: ${productId} to ${quantity}`);
-      await this.custPurchaseProductService.updateProductQuantity(productId, quantity);
-    } catch (error) {
-      console.error(`Error handling product quantity update request: ${error.message}`);
-      throw error;
-    }
-  }
+  // @EventPattern('update.product.quantity')
+  // async handleUpdateProductQuantity(@Payload() data: { productId: string; quantity: number }) {
+  //   const { productId, quantity } = data;
+  //   try {
+  //     console.log(`Received request to update quantity for product ID: ${productId} to ${quantity}`);
+  //     await this.custPurchaseProductService.updateProductQuantity(productId, quantity);
+  //   } catch (error) {
+  //     console.error(`Error handling product quantity update request: ${error.message}`);
+  //     throw error;
+  //   }
+  // }
 
   @MessagePattern('get.product.name')
   async handleProductNameRequest(@Payload() message) {

@@ -75,7 +75,7 @@ export class OrderService {
     this.kafkaClient.subscribeToResponseOf('get.product.quaa');
     this.kafkaClient.subscribeToResponseOf('get.product.qua.cus');
     this.kafkaClient.subscribeToResponseOf('get.address');
-    this.kafkaClient.subscribeToResponseOf('update.product.quantity');
+    // this.kafkaClient.subscribeToResponseOf('update.product.quantity');
     await this.kafkaClient.connect();
   }
 
@@ -87,21 +87,21 @@ export class OrderService {
       return response.quantity;
     } catch (error) {
       console.error('Error fetching product quantity from rent service:', error);
-      try {
-        const response2 = await this.kafkaClient.send('get.product.quaa', { productId }).toPromise();
-        console.log(`Received product quantity from purchase service: ${response2.quantity}`);
-        return response2.quantity;
-      } catch (error2) {
-        console.error('Error fetching product quantity from purchase service:', error2);
-        try {
-          const response3 = await this.kafkaClient.send('get.product.qua.cus', { productId }).toPromise();
-          console.log(`Received product quantity from custom purchase service: ${response3.quantity}`);
-          return response3.quantity;
-        } catch (error3) {
-          console.error('Error fetching product quantity from custom purchase service:', error3);
-          throw new Error('Product quantity not found');
-        }
-      }
+      // try {
+      //   const response2 = await this.kafkaClient.send('get.product.quaa', { productId }).toPromise();
+      //   console.log(`Received product quantity from purchase service: ${response2.quantity}`);
+      //   return response2.quantity;
+      // } catch (error2) {
+      //   console.error('Error fetching product quantity from purchase service:', error2);
+      //   try {
+      //     const response3 = await this.kafkaClient.send('get.product.qua.cus', { productId }).toPromise();
+      //     console.log(`Received product quantity from custom purchase service: ${response3.quantity}`);
+      //     return response3.quantity;
+      //   } catch (error3) {
+      //     console.error('Error fetching product quantity from custom purchase service:', error3);
+      //     throw new Error('Product quantity not found');
+      //   }
+      // }
     }
   }
 

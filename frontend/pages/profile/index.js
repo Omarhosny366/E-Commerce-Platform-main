@@ -3,8 +3,10 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import styles from '../../styles/profile.module.css'; // Import CSS module
 import Navbar from '../components/Navbar'; // Adjust the path if necessary
+import { useRouter } from 'next/router';
 
 const Profile = () => {
+  const router = useRouter();
   const [userData, setUserData] = useState({
     name: '',
     email: '',
@@ -69,6 +71,9 @@ const Profile = () => {
     setIsEditing(false);
     // Optionally, revert changes
   };
+  const handleChangePassword = () => {
+    router.push('/changepass'); // Navigate to change password page
+  };
 
   const handleEditPayment = (endpoint) => {
     axios.get(`http://localhost:3001/orders/${endpoint}`)
@@ -103,7 +108,10 @@ const Profile = () => {
             )}
             <button className={styles.sidebarButton} onClick={() => handleEditPayment('my-orders')}>My Orders</button>
             <button className={styles.sidebarButton} onClick={() => handleEditPayment('my-rents')}>My Rents</button>
+            <button className={styles.sidebarButton} onClick={handleChangePassword}>Change Password</button>
+
           </div>
+          
         </div>
         <div className={styles.profileInfo}>
           <div className={styles.profileHeader}>

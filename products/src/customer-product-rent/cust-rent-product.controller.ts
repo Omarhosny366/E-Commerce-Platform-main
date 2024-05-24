@@ -12,7 +12,7 @@ export class CustRentProductController implements OnModuleInit {
   constructor(private readonly custRentProductService: CustRentProductService) {}
   
   async onModuleInit() {
-    this.kafkaClient.subscribeToResponseOf('update.product.quantity');
+    // this.kafkaClient.subscribeToResponseOf('update.product.quantity');
     await this.kafkaClient.connect();
   }
   @MessagePattern('get.product.namee')
@@ -44,17 +44,17 @@ export class CustRentProductController implements OnModuleInit {
     return this.custRentProductService.getAllProducts();
   }
   
-  @MessagePattern('update.product.quantity')
-  async handleUpdateProductQuantity(@Payload() data: { productId: string; quantity: number }) {
-    const { productId, quantity } = data;
-    try {
-      console.log(`Received request to update quantity for product ID: ${productId} to ${quantity}`);
-      await this.custRentProductService.updateProductQuantity(productId, quantity);
-    } catch (error) {
-      console.error(`Error handling product quantity update request: ${error.message}`);
-      throw error;
-    }
-  }
+  // @MessagePattern('update.product.quantity')
+  // async handleUpdateProductQuantity(@Payload() data: { productId: string; quantity: number }) {
+  //   const { productId, quantity } = data;
+  //   try {
+  //     console.log(`Received request to update quantity for product ID: ${productId} to ${quantity}`);
+  //     await this.custRentProductService.updateProductQuantity(productId, quantity);
+  //   } catch (error) {
+  //     console.error(`Error handling product quantity update request: ${error.message}`);
+  //     throw error;
+  //   }
+  // }
   @Post()
   async createProduct(@Body() createCustRentProductDto: CreateCustRentProductDto): Promise<any> {
     try {
