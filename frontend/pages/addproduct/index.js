@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from '../../styles/addproduct.module.css'; // Correctly import the CSS module
+import Footer from '../components/footerr'; // Ensure this path is correct
 
 const AddProductPage = () => {
   const [productName, setProductName] = useState('');

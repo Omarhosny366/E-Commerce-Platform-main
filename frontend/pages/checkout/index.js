@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar'; // Adjust the import according to your project structure
-import Footer from '../components/Footer'; // Adjust the import according to your project structure
+import Footer from '../components/footerr'; // Ensure this path is correct
 import styles from '../../styles/checkout.module.css'; // Adjust the path
 
 const CheckoutPage = () => {

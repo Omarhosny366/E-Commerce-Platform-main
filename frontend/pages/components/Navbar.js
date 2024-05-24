@@ -1,4 +1,4 @@
-// components/Navbar.js
+
 import React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <div className={styles.navbar}>
       <div className={styles.logoContainer}>
-        <img src="/seelaz_logo.png" alt="Seelaz" className={styles.logo} />
+      <span className={styles.logo}>Seelaz</span>
         <div className={styles.navIcons}>
           {/* Use image buttons for navigation */}
           <button className={styles.toggleButton} onClick={() => handleNavigation('/Home')}>
