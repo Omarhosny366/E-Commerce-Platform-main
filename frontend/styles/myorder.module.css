@@ -1,0 +1,26 @@
+.myOrdersContainer {
+    padding: 20px;
+  }
+
+  .orderCard {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #011526;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: antiquewhite;
+  }
+
+  .orderCard p {
+    margin: 5px 0;
+  }
+
+  .orderCard div {
+    margin-bottom: 10px;
+  }
+
+  .orderCard strong {
+    font-weight: bold;
+    color:#f2522e; /* Set the color to orange */
+  }

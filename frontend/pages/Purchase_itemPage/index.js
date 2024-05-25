@@ -80,7 +80,7 @@ const ItemPage = () => {
     <div className={styles.container}>
       <Navbar />
       <div className={styles.itemContainer}>
-        <img src="/placeholder.jpg" alt={item.name} className={styles.itemImage} />
+        <img src="./assets/product.jpg" alt={item.name} className={styles.itemImage} />
         <div className={styles.itemDetails}>
           <h1 className={styles.itemName}>{item.name}</h1>
           <p className={styles.itemPrice}><strong>${item.price.toFixed(2)}</strong></p>

@@ -9,6 +9,23 @@ const Login = () => {
   const [error, setError] = useState('');
   const router = useRouter();
 
+  const handleGuestLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/user/guest');
+
+      // Check for successful status range
+      if (response.status >= 200 && response.status < 300) {
+        console.log('Guest login successful', response.data);
+        router.push('/Home');
+      } else {
+        setError('Failed to continue as guest. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error continuing as guest:', error);
+      setError('Failed to continue as guest. Please try again.');
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -69,6 +86,12 @@ const Login = () => {
           onClick={() => router.push('/reset')}
         >
                     Forgot your password? again? LOL, Go reset it
+        </button>
+        <button
+          className={styles.toggleButton}
+          onClick={handleGuestLogin}
+        >
+          Wants to continue as a Guest?
         </button>
 
         <div className={styles.bottomContent}>

@@ -99,16 +99,16 @@ const ItemPage = () => {
     <div className={styles.container}>
       <Navbar />
       <div className={styles.itemContainer}>
-        <img src="/placeholder.jpg" alt={item.name} className={styles.itemImage} />
+        <img src="/assets/product.jpg" alt={item.name} className={styles.itemImage} />
         <div className={styles.itemDetails}>
           <h1 className={styles.itemName}>{item.name}</h1>
           <p className={styles.itemPrice}><strong>${item.price}</strong></p>
-          <p className={styles.productMaterial}><strong>material:</strong> {item.material}</p>
-          <p className={styles.productcolor}><strong>color:</strong> {item.color}</p>
-          <p className={styles.productdimensions}><strong>dimensions:</strong> {item.dimensions}</p>
-          <p className={styles.productreview}><strong>review:</strong> {item.review}</p>
-          <p className={styles.producttype}><strong>type: </strong> {item.type}</p>
-          <p className={styles.productquantity}><strong>quantity: </strong> {item.quantity}</p>
+          <p className={styles.productMaterial}><strong>Material:</strong> {item.material}</p>
+          <p className={styles.productcolor}><strong>Color:</strong> {item.color}</p>
+          <p className={styles.productdimensions}><strong>Dimensions:</strong> {item.dimensions}</p>
+          <p className={styles.productreview}><strong>Review:</strong> {item.review}</p>
+          <p className={styles.producttype}><strong>Type:</strong> {item.type}</p>
+          <p className={styles.productquantity}><strong>Quantity:</strong> {item.quantity}</p>
 
           <button className={styles.favoritesButton} onClick={handleAddToFavorites}>Add to Favorites</button>
           <button className={styles.cartButton} onClick={handleAddToCartClick}>Add to Cart</button>
@@ -150,3 +150,4 @@ const ItemPage = () => {
 };
 
 export default ItemPage;
+  

@@ -7,7 +7,7 @@ export class UpdateUserDto {
   @MaxLength(255)
   readonly username: string;
  
-  PhoneNumber:string;
+  PhoneNumber: string;
  
   email: string;
 

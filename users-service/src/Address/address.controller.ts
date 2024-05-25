@@ -22,8 +22,12 @@ export class AddressController {
 
     @Delete(':addressId')
     @HttpCode(HttpStatus.OK)
-    async deleteAddressIdFromUser(@Param('addressId') addressId: string): Promise<void> {
-        await this.addressService.deleteAddressIdFromUser(addressId);
+    async deleteAddressById(@Param('addressId') addressId: string): Promise<void> {
+        try {
+            await this.addressService.deleteAddressById(addressId);
+        } catch (error) {
+            throw new Error('Failed to delete address: ${error.message}');
+        }
     }
 
     @Get(':addressId/belongsToUser')

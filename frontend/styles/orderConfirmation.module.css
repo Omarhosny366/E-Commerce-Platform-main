@@ -1,0 +1,55 @@
+.container {
+    max-width: 400px; /* Adjusted for a more compact layout */
+    margin: 50px auto 50px 340px; /* Adjusted margin to move slightly to the left */
+    padding: 20px;
+    background-color: #011526; /* Blue transparent background */
+    border-radius: 12px;
+    box-shadow: 0 4px 8px #011526;
+    text-align: center; /* Center align text */
+  }
+  
+  .message {
+    text-align: center;
+    margin-top: 50px;
+    color: #fff; /* Set text color to white */
+  }
+  
+  .message h2 {
+    font-size: 2.5rem;
+    color: #f2522e; /* Orange color */
+  }
+  
+  .message p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Navbar */
+  .navbar {
+    background-color: #011526; /* Dark blue */
+    color: #fff;
+    padding: 10px 0;
+  }
+  
+  /* Footer */
+  .footer {
+    background-color: #011526; /* Dark blue */
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .footer p {
+    margin: 0;
+  }
+  
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; /* Adjust margin as needed */
+  }
+  
+  .logo {
+    width: 100px; /* Adjust logo width as needed */
+  }
+  

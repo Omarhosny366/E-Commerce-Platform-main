@@ -177,18 +177,28 @@ export class UserService {
     const userId = this.userSingleton.getCurrentUser()?._id;
 
     if (!userId) {
-      throw new Error('Your session sxpired, Please Login in again');
+      throw new UnauthorizedException('Your session expired, please login again');
     }
 
-    const user = await this.userModel.findById(userId);
+    const user = await this.userModel.findById(userId).select('+password');
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
-    await this.checkPassword(changePasswordDto.currentPassword, user.password);
-    user.password = changePasswordDto.newPassword;
-    return await user.save();
+
+    const isPasswordValid = await bcrypt.compare(changePasswordDto.currentPassword, user.password);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Current password is incorrect');
+    }
+
+    user.password = changePasswordDto.newPassword; 
+
+    await user.save();
+
+    return { message: 'Password changed successfully' };
   }
+
+
 
   async checkPassword(password: string, hashPassword: string) {
     const match = await bcrypt.compare(password, hashPassword);

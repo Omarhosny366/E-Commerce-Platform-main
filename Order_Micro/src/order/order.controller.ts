@@ -28,4 +28,14 @@ export class OrderController {
   async getMyPurchaseOrders(): Promise<OrderDocument[]> {
       return this.orderService.getMyPurchaseOrders();
   }
+
+  @Get('productQuantity')
+  async getProductQuantity(@Body() body: { userId: string, productId: string }): Promise<any> {
+    return this.orderService.getProductQuantity(body.userId, body.productId);
+  }
+
+  @Post('update-quanity')
+  async updateProductQuantity(@Body() body: { userId: string, productId: string, quantity: number }) {
+    return this.orderService.updateItemQuantity(body.userId, body.productId, body.quantity);
+  }
 }

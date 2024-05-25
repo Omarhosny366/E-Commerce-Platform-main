@@ -30,6 +30,9 @@ const Navbar = () => {
           <button className={styles.toggleButton} onClick={() => handleNavigation('/YourCart')}>
             <img src="./assets/CC.png" alt="Cart" />
           </button>
+          <button className={styles.toggleButton} onClick={() => handleNavigation('/')}>
+            <img src="./assets/door.png" alt="Logout" />
+          </button>
         </div>
       </div>
     </div>

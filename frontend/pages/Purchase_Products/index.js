@@ -7,6 +7,7 @@ import styles from '../../styles/purchase_product.module.css'; // Ensure this pa
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  
   const router = useRouter();
 
   useEffect(() => {
@@ -31,8 +32,7 @@ const Products = () => {
     <div className={styles.container}>
       <Navbar />
       <div className={styles.background}>
-      <p ><strong>Purchase Items</strong></p>
-
+        <p><strong>Purchase Items</strong></p>
         <div className={styles.gridContainer}>
           {products.length > 0 ? (
             products.map(product => (
@@ -41,7 +41,7 @@ const Products = () => {
                 className={styles.card}
                 onClick={() => handleCardClick(product._id)}
               >
-                <img src="/placeholder.jpg" alt={product.name} className={styles.productImage} />
+                <img src="./assets/product.jpg" alt={product.name} className={styles.productImage} />
                 <div className={styles.productDetails}>
                   <p className={styles.productName}>{product.name}</p>
                   <p className={styles.productPrice}>${product.price}</p>

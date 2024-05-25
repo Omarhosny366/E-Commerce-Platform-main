@@ -35,6 +35,28 @@ const Register = () => {
     }
   };
 
+  const handleCompleteGuestRegistration = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/user/guest/complete', {
+        email,
+        username,
+        phoneNumber,
+        password,
+      });
+
+      // Check for successful status range
+      if (response.status >= 200 && response.status < 300) {
+        console.log('Guest to registered user successful', response.data);
+        router.push('/');
+      } else {
+        setError('Failed to complete registration. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error completing registration:', error);
+      setError('Failed to complete registration. Please try again.');
+    }
+  };
+
   return (
     <div className={styles.background}>
       <div className={styles.container}>
@@ -84,6 +106,14 @@ const Register = () => {
           onClick={() => router.push('/login')}
         >
           Already have an account? Login
+        </button>
+
+        <p>IF You Are A Guest and want to be a registered user, fill the above data and then press</p>
+        <button
+          className={styles.toggleButton}
+          onClick={handleCompleteGuestRegistration}
+        >
+          here
         </button>
 
         <div className={styles.bottomContent}>

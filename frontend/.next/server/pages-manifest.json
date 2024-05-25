@@ -2,6 +2,13 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/YourCart": "pages/YourCart.js",
+  "/checkout": "pages/checkout.js",
+  "/orderConfirmation": "pages/orderConfirmation.js",
+  "/Rent_Products": "pages/Rent_Products.js",
   "/profile": "pages/profile.js",
-  "/changepass": "pages/changepass.js"
+  "/Rent_itemPage": "pages/Rent_itemPage.js",
+  "/myrent": "pages/myrent.js",
+  "/Home": "pages/Home.js",
+  "/register": "pages/register.js"
 }

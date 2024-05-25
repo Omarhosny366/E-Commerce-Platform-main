@@ -50,19 +50,35 @@ export class AddressService {
         return addresses;
     }
 
-    async deleteAddressIdFromUser(addressId: string): Promise<void> {
-        const userId = this.userSingleton.getCurrentUser()?._id;
-        if (!userId) {
-            throw new Error('User not found with this ID');
-        }
-        const user = await this.userModel.findById(userId);
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
-        const index = user.address_Id.indexOf(addressId);
-        if (index !== -1) {
-            user.address_Id.splice(index, 1);
-            await user.save();
+    async deleteAddressById(addressId: string): Promise<void> {
+        try {
+            // Check if the user exists
+            const userId = this.userSingleton.getCurrentUser()?._id;
+            if (!userId) {
+                throw new Error('User not found with this ID');
+            }
+            const user = await this.userModel.findById(userId);
+            if (!user) {
+                throw new NotFoundException('User not found');
+            }
+
+            // Find the address by ID
+            const address = await this.addressModel.findById(addressId);
+            if (!address) {
+                throw new NotFoundException('Address not found');
+            }
+
+            // Remove the address from the user's list of addresses
+            const index = user.address_Id.indexOf(addressId);
+            if (index !== -1) {
+                user.address_Id.splice(index, 1);
+                await user.save();
+            }
+
+            // Delete the address
+            await this.addressModel.findByIdAndDelete(addressId);
+        } catch (error) {
+            throw new Error('Failed to delete address: ${error.message}');
         }
     }
 

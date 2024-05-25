@@ -3,15 +3,22 @@
 import React from 'react';
 import styles from '../../styles/Home.module.css';
 import Navbar from '../components/Navbar';
+import { useRouter } from 'next/router';
 
 function Home() {
+  const router = useRouter();
+
   const handleBuyButtonClick = () => {
-    // Add your logic here for the BUY button
+router.push('/Purchase_Products');
   };
 
   const handleRentButtonClick = () => {
-    // Add your logic here for the RENT button
+    router.push('/Rent_Products');  
   };
+  const handlecusButtonClick = () => {
+    router.push('/custom');  
+  };
+  
 
   return (
     <div className={styles.pageWrapper}> {/* Add a wrapper */}
@@ -28,9 +35,9 @@ function Home() {
         <div className={styles.card2}>
           <img src="assets/card_image2.jpg" alt="Image 2" />
           <div className={styles.buttonsContainer}>
-            <button className={styles.button5}>Make</button>
-            <button className={styles.button2}>Your</button>
-            <button className={styles.button3}>Own</button>
+            <button className={styles.button5} onClick={handlecusButtonClick}>Make</button>
+            <button className={styles.button2} onClick={handlecusButtonClick}>Your</button>
+            <button className={styles.button3} onClick={handlecusButtonClick}>Own</button>
           </div>
           <span className={styles.customize}>Customize</span>
         </div>
