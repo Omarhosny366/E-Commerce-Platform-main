@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+const cors = require('cors');
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,7 +17,7 @@ async function bootstrap() {
       },
     },
   });
-
+  app.use(cors()); // Enable CORS for all routes
   await app.startAllMicroservices();
   app.enableCors();
   await app.listen(3001);
