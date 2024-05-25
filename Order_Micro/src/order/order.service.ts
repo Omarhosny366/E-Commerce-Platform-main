@@ -1,13 +1,11 @@
-import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Order, OrderDocument } from './schema/order.schema';
 import { ClientKafka } from '@nestjs/microservices';
 import { CartService } from 'src/cart/cart.service';
 import { UserSingleton } from 'src/cart/userSingleton';
 import * as nodemailer from 'nodemailer';
-import { Cart } from 'src/cart/schemas/cart.schema';
-import {CartDocument} from 'src/cart/schemas/cart.schema';
 
 @Injectable()
 export class OrderService {
@@ -17,8 +15,6 @@ export class OrderService {
     @InjectModel('Order') private orderModel: Model<OrderDocument>,
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
     private readonly cartService: CartService,
-    @InjectModel('Cart') private cart: Model<Cart>,
-    @InjectModel(Cart.name) private readonly cartModel: Model<CartDocument>,
   ) {
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -83,56 +79,31 @@ export class OrderService {
     await this.kafkaClient.connect();
   }
 
-   // Method to get the quantity of a product in the cart
-   async getProductQuantity(userId: string, productId: string): Promise<number> {
-    const cart = await this.cartModel.findOne({ userId: new Types.ObjectId(userId) }).exec();
-
-    if (!cart) {
-      throw new NotFoundException('Cart not found');
+  async getProductQuantity(productId: string): Promise<number> {
+    console.log(`Requesting product quantity for ID: ${productId}`);
+    try {
+      const response = await this.kafkaClient.send('get.product.qua', { productId }).toPromise();
+      console.log(`Received product quantity: ${response.quantity}`);
+      return response.quantity;
+    } catch (error) {
+      console.error('Error fetching product quantity from rent service:', error);
+      // try {
+      //   const response2 = await this.kafkaClient.send('get.product.quaa', { productId }).toPromise();
+      //   console.log(`Received product quantity from purchase service: ${response2.quantity}`);
+      //   return response2.quantity;
+      // } catch (error2) {
+      //   console.error('Error fetching product quantity from purchase service:', error2);
+      //   try {
+      //     const response3 = await this.kafkaClient.send('get.product.qua.cus', { productId }).toPromise();
+      //     console.log(`Received product quantity from custom purchase service: ${response3.quantity}`);
+      //     return response3.quantity;
+      //   } catch (error3) {
+      //     console.error('Error fetching product quantity from custom purchase service:', error3);
+      //     throw new Error('Product quantity not found');
+      //   }
+      // }
     }
-
-    const item = cart.items.find(item => item.product_id.toString() === productId);
-
-    if (!item) {
-      throw new NotFoundException('Product not found in cart');
-    }
-
-    return item.quantity;
   }
-
-
-  async updateItemQuantity(userId: string, productId: string, quantityChange: number): Promise<Cart> {
-    const cart = await this.cart.findOne({ userId: new Types.ObjectId(userId) }).exec();
-
-    if (!cart) {
-        throw new NotFoundException('Cart not found');
-    }
-
-    const itemIndex = cart.items.findIndex(item => item.product_id.toString() === productId);
-    if (itemIndex === -1) {
-        throw new NotFoundException('Item not found in cart');
-    }
-
-    const item = cart.items[itemIndex];
-    item.quantity += quantityChange;
-
-    if (item.quantity <= 0) {
-        cart.items.splice(itemIndex, 1);
-    }
-
-    cart.totalPrice = cart.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    cart.downpayment = cart.items.reduce((total, item) => total + (item.downPayment || 0), 0);
-
-    if (isNaN(cart.totalPrice) || isNaN(cart.downpayment)) {
-        throw new BadRequestException('Invalid total price or downpayment calculation');
-    }
-
-    cart.markModified('items');
-    await cart.save();
-    return cart;
-}
-
-    
 
 //   async updateProductQuantity(productId: string, quantity: number): Promise<void> {
 //     try {
@@ -142,7 +113,7 @@ export class OrderService {
 //       console.error(`Error updating product quantity for ID: ${productId}`, error);
 //       throw new Error('Failed to update product quantity');
 //     }
-//   }
+// }
 
   async placeOrder(addressId: string): Promise<OrderDocument> {
     await this.isGuestUser(); // Correctly call and wait for the guest check
@@ -158,9 +129,9 @@ export class OrderService {
     // Update quantities for each product in the cart
     for (const item of cart.items) {
         const productId = item.product_id.toString();
-      const currentQuantity = await this.getProductQuantity(userId, productId);
+      const currentQuantity = await this.getProductQuantity(productId);
       const newQuantity = currentQuantity - item.quantity;
-      await this.updateItemQuantity(userId, productId, newQuantity);
+      // await this.updateProductQuantity(productId, newQuantity);
     }
 
     // Create new order with the same ID as the cart
@@ -254,7 +225,7 @@ export class OrderService {
     const userId = this.getCurrentUserId();
     const rentOrders = await this.orderModel.find({
       userId,
-      'items.type': 'Rent'
+      'items.type': 'rent'
     }).exec();
     return rentOrders.map(order => this.addRemainingAmount(order));
   }

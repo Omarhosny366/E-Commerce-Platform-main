@@ -13,6 +13,7 @@ export class CartService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    
     this.kafkaClient.subscribeToResponseOf('get.product.price');
     this.kafkaClient.subscribeToResponseOf('get.product.mat');
     this.kafkaClient.subscribeToResponseOf('get.product.type');
@@ -206,6 +207,7 @@ export class CartService implements OnModuleInit {
     if (!cart) {
       throw new Error('Cart not found');
     }
+    console.log('Emitting cart details event:', cart);
     return cart;
   }
 
@@ -289,6 +291,8 @@ export class CartService implements OnModuleInit {
     }
 
     await cart.save();
+    this.kafkaClient.emit('cart.details', JSON.stringify(cart));
+
     return cart;
   }
 
